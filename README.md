@@ -7,5 +7,5 @@ Idea #2 : Social distancing detection for surveillance cameras
 Problem Statement : This will help stores/governments in detecting social distancing violations in real time using computer vision.
 Related idea : Fire detection. Early detection of fire through cameras using deep learning. This can be extended to geo-locate the fire and alarm concerned parties.
 
-Idea #4 : Image captioning
+Idea #3 : Image captioning
 Problem Statement : Describing an image in plain text using computer vision and NLP. This tech can be used in image search. Users can search images by entering text query.
