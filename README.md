@@ -1,6 +1,7 @@
-# Team23
+### Team23
 
 ### Project Title: Social distancing detection for surveillance cameras
+---
 
 #### Abstract: 
 Due to Covid-19 pandemic, public places require social distancing to prevent spread of Covid further. In offices/malls/restaurants people are required to stay 6feet away from each other. Malls & Stores usually have a dedicated person for monitoring social distancing among the people standing outside the store in queue. While the world reopens, governments need to track if businesses are following Covid guidelines that are mandated.
