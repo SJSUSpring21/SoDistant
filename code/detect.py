@@ -35,13 +35,11 @@ def detect_people(frame, net, ln, personIdx=0):
 
     if DISPLAY:
         human_count = "Human count: {}".format(len(idxs))
-        cv2.putText(frame, human_count, (470, frame.shape[0] - 75), cv2.FONT_HERSHEY_SIMPLEX, 0.60, (0, 0, 0), 2)
+        cv2.putText(frame, human_count, (470, frame.shape[0] - 75), cv2.FONT_HERSHEY_SIMPLEX, 0.60, (0, 0, 0), 1)
 
     if len(idxs) > 0:
         for i in idxs.flatten():
-            (x, y) = (boxes[i][0], boxes[i][1])
-            (w, h) = (boxes[i][2], boxes[i][3])
-
+            x, y, w, h = boxes[i]
             r = (confidences[i], (x, y, x + w, y + h), centroids[i])
             results.append(r)
 

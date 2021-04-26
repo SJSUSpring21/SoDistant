@@ -39,10 +39,11 @@ else:
     print("[INFO] Starting the video...")
     cap = cv2.VideoCapture(config.VIDEO_PATH + args.input)
 
+inputFps = cap.get(cv2.CAP_PROP_FPS)
 writer = None
 fps = FPS().start()
 
-while True:
+while cv2.waitKey(1) != 27:
     (success, frame) = cap.read()
     if not success:
         break
@@ -67,36 +68,32 @@ while True:
         color = (0, 255, 0)
         if i in violation:
             color = (0, 0, 255)
-        cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
-        cv2.circle(frame, (cX, cY), 5, color, 2)
+        cv2.rectangle(frame, (startX, startY), (endX, endY), color, 1)
+        cv2.circle(frame, (cX, cY), 1, color, 1)
 
     if config.DISPLAY:
         Safe_Distance = "Safe distance: >{} px".format(config.MIN_DISTANCE)
-        cv2.putText(frame, Safe_Distance, (470, frame.shape[0] - 25), font, 0.60, (255, 0, 0), 2)
+        cv2.putText(frame, Safe_Distance, (470, frame.shape[0] - 25), font, 0.60, (255, 0, 0), 1)
         Threshold = "Threshold limit: {}".format(config.THRESHOLD)
-        cv2.putText(frame, Threshold, (470, frame.shape[0] - 50), font, 0.60, (255, 0, 0), 2)
+        cv2.putText(frame, Threshold, (470, frame.shape[0] - 50), font, 0.60, (255, 0, 0), 1)
         text = "Total violations: {}".format(len(violation))
-        cv2.putText(frame, text, (10, frame.shape[0] - 25), font, 0.60, (0, 0, 255), 2)
+        cv2.putText(frame, text, (10, frame.shape[0] - 25), font, 0.60, (0, 0, 255), 1)
 
     if len(violation) >= config.THRESHOLD:
         if config.DISPLAY:
-            cv2.putText(frame, "*ALERT: Violations over limit*", (10, frame.shape[0] - 50), font, 0.60, (0, 0, 255), 2)
+            cv2.putText(frame, "*ALERT: Violations over limit*", (10, frame.shape[0] - 50), font, 0.60, (0, 0, 255), 1)
         if config.ALERT:
             print('[INFO] Sending mail...')
             Mailer().send(config.MAIL)
             print('[INFO] Mail sent')
 
     cv2.imshow("Real-Time Monitoring/Analysis Window", frame)
-    key = cv2.waitKey(1)
-    if key == 27:
-        break
-
     fps.update()
 
     if args.output != "" and writer is None:
         outputFile = config.VIDEO_PATH + "output/" + args.output
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        writer = cv2.VideoWriter(outputFile, fourcc, 25,
+        writer = cv2.VideoWriter(outputFile, fourcc, 20,
                                  (frame.shape[1], frame.shape[0]), True)
     if writer is not None:
         writer.write(frame)
