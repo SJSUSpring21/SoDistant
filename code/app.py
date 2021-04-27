@@ -93,7 +93,7 @@ while cv2.waitKey(1) != 27:
     if args.output != "" and writer is None:
         outputFile = config.VIDEO_PATH + "output/" + args.output
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        writer = cv2.VideoWriter(outputFile, fourcc, 20,
+        writer = cv2.VideoWriter(outputFile, fourcc, 25,
                                  (frame.shape[1], frame.shape[0]), True)
     if writer is not None:
         writer.write(frame)
@@ -103,4 +103,7 @@ print("----------------------------")
 print("[INFO] Elapsed time: {:.2f}".format(fps.elapsed()))
 print("[INFO] Approx. FPS: {:.2f}".format(fps.fps()))
 
+if args.output != "":
+    writer.release()
+cap.release()
 cv2.destroyAllWindows()
