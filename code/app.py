@@ -1,9 +1,7 @@
 import config
 from mail import Mailer
-from detect import detect_people
+from detect import detect_people, draw_people
 from imutils.video import VideoStream, FPS
-from scipy.spatial import distance as dist
-import numpy as np
 import argparse, imutils, cv2, os, time
 
 parser = argparse.ArgumentParser()
@@ -50,36 +48,17 @@ while cv2.waitKey(1) != 27:
 
     frame = imutils.resize(frame, width=700, height=700)
     results = detect_people(frame, net, ln, personIdx=LABELS.index("person"))
-    violation = set()
-
-    if len(results) >= 2:
-        centroids = np.array([r[2] for r in results])
-        D = dist.cdist(centroids, centroids, metric="euclidean")
-
-        for i in range(0, D.shape[0]):
-            for j in range(i + 1, D.shape[1]):
-                if D[i, j] < config.MIN_DISTANCE:
-                    violation.add(i)
-                    violation.add(j)
-
-    for (i, (prob, bbox, centroid)) in enumerate(results):
-        (startX, startY, endX, endY) = bbox
-        (cX, cY) = centroid
-        color = (0, 255, 0)
-        if i in violation:
-            color = (0, 0, 255)
-        cv2.rectangle(frame, (startX, startY), (endX, endY), color, 1)
-        cv2.circle(frame, (cX, cY), 1, color, 1)
+    violations = draw_people(frame, results)
 
     if config.DISPLAY:
         Safe_Distance = "Safe distance: >{} px".format(config.MIN_DISTANCE)
         cv2.putText(frame, Safe_Distance, (470, frame.shape[0] - 25), font, 0.60, (255, 0, 0), 1)
         Threshold = "Threshold limit: {}".format(config.THRESHOLD)
         cv2.putText(frame, Threshold, (470, frame.shape[0] - 50), font, 0.60, (255, 0, 0), 1)
-        text = "Total violations: {}".format(len(violation))
+        text = "Total violations: {}".format(len(violations))
         cv2.putText(frame, text, (10, frame.shape[0] - 25), font, 0.60, (0, 0, 255), 1)
 
-    if len(violation) >= config.THRESHOLD:
+    if len(violations) >= config.THRESHOLD:
         if config.DISPLAY:
             cv2.putText(frame, "*ALERT: Violations over limit*", (10, frame.shape[0] - 50), font, 0.60, (0, 0, 255), 1)
         if config.ALERT:
