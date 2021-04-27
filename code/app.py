@@ -37,7 +37,7 @@ else:
     print("[INFO] Starting the video...")
     cap = cv2.VideoCapture(config.VIDEO_PATH + args.input)
 
-inputFps = cap.get(cv2.CAP_PROP_FPS)
+# inputFps = cap.get(cv2.CAP_PROP_FPS)
 writer = None
 fps = FPS().start()
 
