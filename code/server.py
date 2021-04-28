@@ -1,18 +1,16 @@
 from flask import Flask, render_template, Response
 import cv2
-import time
+import time, math
 import config
-from mail import Mailer
-import argparse, imutils, cv2, os, time
-from detect import detect_people, draw_people
+import imutils, cv2, os, time
+from detect import detect_people, draw_people, draw_metrics
 from imutils.video import VideoStream, FPS
-
+from flask import jsonify, stream_with_context
 
 app = Flask(__name__)
 
 
 def gen_frames():
-    font = cv2.FONT_HERSHEY_SIMPLEX
     labelsPath = os.path.sep.join([config.MODEL_PATH, "coco.names"])
     LABELS = open(labelsPath).read().strip().split("\n")
 
@@ -41,28 +39,13 @@ def gen_frames():
         if not success:
             break
         frame = imutils.resize(frame, width=700, height=700)
-        results = detect_people(frame, net, ln, personIdx=LABELS.index("person"))
+        results, no_of_people = detect_people(frame, net, ln, personIdx=LABELS.index("person"))
         violations = draw_people(frame, results)
-
-        if config.DISPLAY:
-            Safe_Distance = "Safe distance: >{} px".format(config.MIN_DISTANCE)
-            cv2.putText(frame, Safe_Distance, (470, frame.shape[0] - 25), font, 0.60, (255, 0, 0), 1)
-            Threshold = "Threshold limit: {}".format(config.THRESHOLD)
-            cv2.putText(frame, Threshold, (470, frame.shape[0] - 50), font, 0.60, (255, 0, 0), 1)
-            text = "Total violations: {}".format(len(violations))
-            cv2.putText(frame, text, (10, frame.shape[0] - 25), font, 0.60, (0, 0, 255), 1)
-
-        if len(violations) >= config.THRESHOLD:
-            if config.DISPLAY:
-                cv2.putText(frame, "*ALERT: Violations over limit*", (10, frame.shape[0] - 50), font, 0.60, (0, 0, 255),
-                            1)
-            if config.ALERT:
-                print('[INFO] Sending mail...')
-                Mailer().send(config.MAIL)
-                print('[INFO] Mail sent')
+        draw_metrics(frame, violations, no_of_people)
 
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer.tobytes()
+        yield "{\"violations\": %d}" % len(violations)
         yield b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n'
         # time.sleep(0.1)
         fps.update()

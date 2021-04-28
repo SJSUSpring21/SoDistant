@@ -2,6 +2,7 @@ import config
 import numpy as np
 import cv2
 from scipy.spatial import distance as dist
+from mail import Mailer
 
 
 def detect_people(frame, net, ln, personIdx=0):
@@ -34,17 +35,13 @@ def detect_people(frame, net, ln, personIdx=0):
 
     idxs = cv2.dnn.NMSBoxes(boxes, confidences, config.MIN_CONF, config.NMS_THRESH)
 
-    if config.DISPLAY:
-        human_count = "Human count: {}".format(len(idxs))
-        cv2.putText(frame, human_count, (470, frame.shape[0] - 75), cv2.FONT_HERSHEY_SIMPLEX, 0.60, (0, 0, 0), 1)
-
     if len(idxs) > 0:
         for i in idxs.flatten():
             x, y, w, h = boxes[i]
             r = (confidences[i], (x, y, x + w, y + h), centroids[i])
             results.append(r)
 
-    return results
+    return results, len(idxs)
 
 
 def draw_people(frame, results):
@@ -70,3 +67,25 @@ def draw_people(frame, results):
         cv2.circle(frame, (cX, cY), 1, color, 1)
 
     return violations
+
+
+def draw_metrics(frame, violations, no_of_people):
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    if config.DISPLAY:
+        safe_distance_text = "Safe distance: >{} px".format(config.MIN_DISTANCE)
+        cv2.putText(frame, safe_distance_text, (470, frame.shape[0] - 25), font, 0.60, (255, 0, 0), 1)
+        threshold_text = "Threshold limit: {}".format(config.THRESHOLD)
+        cv2.putText(frame, threshold_text, (470, frame.shape[0] - 50), font, 0.60, (255, 0, 0), 1)
+        violations_text = "Total violations: {}".format(len(violations))
+        cv2.putText(frame, violations_text, (10, frame.shape[0] - 25), font, 0.60, (0, 0, 255), 1)
+        total_people_text = "Total people: {}".format(no_of_people)
+        cv2.putText(frame, total_people_text, (470, frame.shape[0] - 75), cv2.FONT_HERSHEY_SIMPLEX, 0.60, (0, 0, 0), 1)
+
+    if len(violations) >= config.THRESHOLD:
+        if config.DISPLAY:
+            cv2.putText(frame, "*ALERT: Violations over limit*", (10, frame.shape[0] - 50), font, 0.60, (0, 0, 255),
+                        1)
+        if config.ALERT:
+            print('[INFO] Sending mail...')
+            Mailer().send(config.MAIL)
+            print('[INFO] Mail sent')
