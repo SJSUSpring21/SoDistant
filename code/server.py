@@ -6,6 +6,7 @@ import imutils, cv2, os, time
 from detect import detect_people, draw_people, draw_metrics
 from imutils.video import VideoStream, FPS
 from flask import jsonify, stream_with_context
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 
@@ -56,7 +57,9 @@ def gen_frames():
 
 
 @app.route('/video_feed')
+@cross_origin()
 def video_feed():
+    # Response.headers.add("Access-Control-Allow-Origin", "*")
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
