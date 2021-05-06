@@ -1,4 +1,4 @@
-import config
+from flask import current_app as app
 import numpy as np
 import cv2
 from scipy.spatial import distance as dist
@@ -9,7 +9,7 @@ def detect_people(frame, net, ln, personIdx=0):
     (H, W) = frame.shape[:2]
     results = []
 
-    blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (config.CV_INP_WIDTH, config.CV_INP_HEIGHT), (0, 0, 0), swapRB=True, crop=False)
+    blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (app.config['CV_INP_WIDTH'], app.config['CV_INP_HEIGHT']), (0, 0, 0), swapRB=True, crop=False)
     net.setInput(blob)
     layerOutputs = net.forward(ln)
 
@@ -23,7 +23,7 @@ def detect_people(frame, net, ln, personIdx=0):
             classID = np.argmax(scores)
             confidence = scores[classID]
 
-            if classID == personIdx and confidence > config.MIN_CONF:
+            if classID == personIdx and confidence > app.config['MIN_CONF']:
                 box = detection[0:4] * np.array([W, H, W, H])
                 (centerX, centerY, width, height) = box.astype("int")
                 x = int(centerX - (width / 2))
@@ -33,7 +33,7 @@ def detect_people(frame, net, ln, personIdx=0):
                 centroids.append((centerX, centerY))
                 confidences.append(float(confidence))
 
-    idxs = cv2.dnn.NMSBoxes(boxes, confidences, config.MIN_CONF, config.NMS_THRESH)
+    idxs = cv2.dnn.NMSBoxes(boxes, confidences, app.config['MIN_CONF'], app.config['NMS_THRESH'])
 
     if len(idxs) > 0:
         for i in idxs.flatten():
@@ -53,7 +53,7 @@ def draw_people(frame, results):
 
         for i in range(0, D.shape[0]):
             for j in range(i + 1, D.shape[1]):
-                if D[i, j] < config.MIN_DISTANCE:
+                if D[i, j] < app.config['MIN_DISTANCE']:
                     violations.add(i)
                     violations.add(j)
 
@@ -71,21 +71,21 @@ def draw_people(frame, results):
 
 def draw_metrics(frame, violations, no_of_people):
     font = cv2.FONT_HERSHEY_SIMPLEX
-    if config.DISPLAY:
-        safe_distance_text = "Safe distance: >{} px".format(config.MIN_DISTANCE)
+    if app.config['DISPLAY']:
+        safe_distance_text = "Safe distance: >{} px".format(app.config['MIN_DISTANCE'])
         cv2.putText(frame, safe_distance_text, (470, frame.shape[0] - 25), font, 0.60, (255, 0, 0), 1)
-        threshold_text = "Threshold limit: {}".format(config.THRESHOLD)
+        threshold_text = "Threshold limit: {}".format(app.config['THRESHOLD'])
         cv2.putText(frame, threshold_text, (470, frame.shape[0] - 50), font, 0.60, (255, 0, 0), 1)
         violations_text = "Total violations: {}".format(len(violations))
         cv2.putText(frame, violations_text, (10, frame.shape[0] - 25), font, 0.60, (0, 0, 255), 1)
         total_people_text = "Total people: {}".format(no_of_people)
         cv2.putText(frame, total_people_text, (470, frame.shape[0] - 75), cv2.FONT_HERSHEY_SIMPLEX, 0.60, (0, 0, 0), 1)
 
-    if len(violations) >= config.THRESHOLD:
-        if config.DISPLAY:
+    if len(violations) >= app.config['THRESHOLD']:
+        if app.config['DISPLAY']:
             cv2.putText(frame, "*ALERT: Violations over limit*", (10, frame.shape[0] - 50), font, 0.60, (0, 0, 255),
                         1)
-        if config.ALERT:
+        if app.config['ALERT']:
             print('[INFO] Sending mail...')
-            Mailer().send(config.MAIL)
+            Mailer().send(app.config['MAIL'])
             print('[INFO] Mail sent')
