@@ -8,7 +8,7 @@ ALERT = False
 MAIL = ''
 
 URL = 0
-MIN_DISTANCE = 50
+MIN_DISTANCE = 40
 CV_INP_WIDTH = 416
 CV_INP_HEIGHT = 416
 # WEIGHTS = "yolov3.weights"

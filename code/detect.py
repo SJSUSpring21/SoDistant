@@ -56,6 +56,7 @@ def draw_people(frame, results):
                 if D[i, j] < app.config['MIN_DISTANCE']:
                     violations.add(i)
                     violations.add(j)
+                    cv2.line(frame, (centroids[i][0], centroids[i][1]), (centroids[j][0], centroids[j][1]), (0, 0, 255), 1)
 
     for (i, (prob, bbox, centroid)) in enumerate(results):
         (startX, startY, endX, endY) = bbox
@@ -64,7 +65,7 @@ def draw_people(frame, results):
         if i in violations:
             color = (0, 0, 255)
         cv2.rectangle(frame, (startX, startY), (endX, endY), color, 1)
-        cv2.circle(frame, (cX, cY), 1, color, 1)
+        cv2.circle(frame, (cX, cY), 1, color, 2)
 
     return violations
 
