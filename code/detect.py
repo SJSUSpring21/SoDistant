@@ -2,7 +2,8 @@ from flask import current_app as app
 import numpy as np
 import cv2
 from scipy.spatial import distance as dist
-from mail import Mailer
+from mail import send
+import threading
 
 
 def detect_people(frame, net, ln, personIdx=0):
@@ -70,7 +71,7 @@ def draw_people(frame, results):
     return violations
 
 
-def draw_metrics(frame, violations, no_of_people):
+def draw_metrics(frame, violations, no_of_people, mailSent):
     font = cv2.FONT_HERSHEY_SIMPLEX
     if app.config['DISPLAY']:
         safe_distance_text = "Safe distance: >{} px".format(app.config['MIN_DISTANCE'])
@@ -84,9 +85,10 @@ def draw_metrics(frame, violations, no_of_people):
 
     if len(violations) >= app.config['THRESHOLD']:
         if app.config['DISPLAY']:
-            cv2.putText(frame, "*ALERT: Violations over limit*", (10, frame.shape[0] - 50), font, 0.60, (0, 0, 255),
-                        1)
-        if app.config['ALERT']:
+            cv2.putText(frame, "*ALERT: Violations over limit*", (10, frame.shape[0] - 50), font, 0.60, (0, 0, 255), 1)
+        if app.config['ALERT'] is True and mailSent is not True:
             print('[INFO] Sending mail...')
-            Mailer().send(app.config['MAIL'])
-            print('[INFO] Mail sent')
+            threading.Thread(target=send, args=(app.config['MAIL'],)).start()
+            return True
+
+    return False
