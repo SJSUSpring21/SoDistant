@@ -2,6 +2,7 @@ MODEL_PATH = "yolo"
 MIN_CONF = 0.4
 NMS_THRESH = 0.4
 DISPLAY = True
+OUTPUT = True
 THRESHOLD = 15
 USE_GPU = False
 ALERT = False

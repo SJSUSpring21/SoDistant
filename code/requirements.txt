@@ -4,3 +4,4 @@ imutils~=0.5.4
 opencv-python~=4.5.1.48
 argparse
 Flask~=1.1.2
+opencv-python-headless
