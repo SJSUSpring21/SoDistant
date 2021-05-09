@@ -42,8 +42,11 @@ export default function DashboardPage() {
 
     const handleDownloadVideo = (e) =>{
             e.preventDefault();
+            const requestOptions = {
+             headers: { 'Content-Type': 'video/mp4'},
+            }
             console.log("calling download video API");
-            axios.get("http://localhost:5000/downloadvideo")
+            axios.get("http://localhost:5000/download/test")
             .then((response) => {
             console.log("Response: "+response.data);
             }).catch(err=>{
@@ -62,7 +65,7 @@ export default function DashboardPage() {
         style={{display:"inline-block",marginLeft:"300px",width:"700",height:"700"}} 
         elevation={3}>
         <iframe id="myiframe" 
-        src="http://localhost:5000/video_feed" 
+        src="http://localhost:5000/video_feed/mall" 
         width="700" height="395"/>
         {/* <img src="http://localhost:5000/video_feed"
         width="700" height="395"/> */}
