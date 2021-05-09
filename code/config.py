@@ -5,7 +5,7 @@ DISPLAY = True
 OUTPUT = True
 THRESHOLD = 15
 USE_GPU = False
-ALERT = False
+ALERT = True
 MAIL = ''
 
 URL = 0

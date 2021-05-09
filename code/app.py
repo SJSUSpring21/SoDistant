@@ -42,6 +42,7 @@ colors = [
 def gen_frames(filename):
     try:
         with app.app_context():
+            mailSent = False
             labelsPath = os.path.sep.join([app.config['MODEL_PATH'], "coco.names"])
             LABELS = open(labelsPath).read().strip().split("\n")
 
@@ -73,7 +74,8 @@ def gen_frames(filename):
                 frame = imutils.resize(frame, width=700, height=700)
                 results, no_of_people = detect_people(frame, net, ln, personIdx=LABELS.index("person"))
                 violations = draw_people(frame, results)
-                draw_metrics(frame, violations, no_of_people)
+                if draw_metrics(frame, violations, no_of_people, mailSent) is True:
+                    mailSent = True
 
                 ret, buffer = cv2.imencode('.jpg', frame)
                 yield b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n'
