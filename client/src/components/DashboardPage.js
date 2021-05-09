@@ -49,6 +49,19 @@ export default function DashboardPage() {
             axios.get("http://localhost:5000/download/test")
             .then((response) => {
             console.log("Response: "+response.data);
+            console.log("Response: "+ JSON.stringify(response.data.type));
+            var link = document.createElement("a");
+              link.href = URL.createObjectURL(
+                new Blob([response])
+              );
+              link.download = "file.zip";
+
+              document.body.appendChild(link);
+
+              link.click();
+              setTimeout(function () {
+                window.URL.revokeObjectURL(link);
+              }, 200);
             }).catch(err=>{
                 console.log(err);
             });
