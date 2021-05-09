@@ -3,16 +3,18 @@ from flask_cors import CORS, cross_origin
 import cv2
 import imutils
 import os
-from flask import Flask, render_template, Response, send_from_directory, request
+from flask import Flask, render_template, Response, send_from_directory, request, jsonify, flash, redirect, url_for, make_response
 from imutils.video import FPS
 import traceback
 from detect import detect_people, draw_people, draw_metrics
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 
 settings = ['MODEL_PATH', 'MIN_CONF', 'NMS_THRESH', 'DISPLAY', 'THRESHOLD', 'USE_GPU', 'ALERT', 'MAIL', 'URL',
             'MIN_DISTANCE', 'CV_INP_WIDTH', 'CV_INP_HEIGHT', 'WEIGHTS', 'CFG', 'VIDEO_PATH', 'OUTPUT']
+ALLOWED_EXTENSIONS = {'mp4'}
 
 
 def getSettings(config_dict):
@@ -63,7 +65,7 @@ def gen_frames(filename):
             ln = net.getLayerNames()
             ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 
-            cap = cv2.VideoCapture(app.config['VIDEO_PATH'] + filename + ".mp4")
+            cap = cv2.VideoCapture(app.config['VIDEO_PATH'] + filename)
             writer = None
             fps = FPS().start()
 
@@ -81,7 +83,7 @@ def gen_frames(filename):
                 yield b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n'
                 fps.update()
                 if app.config['OUTPUT'] is True and writer is None:
-                    outputFile = app.config['VIDEO_PATH'] + "output/" + filename + ".mp4"
+                    outputFile = app.config['VIDEO_PATH'] + "output/" + filename
                     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
                     writer = cv2.VideoWriter(outputFile, fourcc, 25,
                                              (frame.shape[1], frame.shape[0]), True)
@@ -122,10 +124,36 @@ def line():
 @cross_origin(origin='localhost')
 def download(filename):
     try:
-        uploads = os.path.join(app.root_path, app.config['VIDEO_PATH'] + "output/")
-        return send_from_directory(directory=uploads, filename=filename + ".mp4",mimetype='application/octet-stream', as_attachment=True)
+        output_folder = os.path.join(app.root_path, app.config['VIDEO_PATH'], "output/")
+        return send_from_directory(directory=output_folder, filename=filename, mimetype='application/octet-stream',
+                                   as_attachment=True)
     except:
         traceback.print_exc()
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    try:
+        if 'file' not in request.files:
+            flash('No file part')
+            return make_response(False, 500)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return make_response(False, 500)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.root_path, app.config['VIDEO_PATH'], filename))
+            flash('File uploaded')
+            return make_response(True, 200)
+    except:
+        traceback.print_exc()
+        return make_response(False, 500)
 
 
 @app.route('/config', methods=['GET', 'POST'])
