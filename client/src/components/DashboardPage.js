@@ -87,12 +87,23 @@ export default function DashboardPage() {
         <Col>
         <br/>
 
-        <Button
+        {/* <Button
         style={{marginLeft:"300px"}}
         variant="contained"
         color="default"
         onClick={handleDownloadVideo}
         startIcon={<GetAppRoundedIcon />}
+      >
+        Download video
+      </Button> */}
+
+      <Button
+      style={{marginLeft:"300px"}}
+      variant = "contained"
+      color = "default"
+      onClick={(e) => {
+        window.location.href='http://localhost:5000/download/test';
+      }}
       >
         Download video
       </Button>
