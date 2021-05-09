@@ -3,7 +3,7 @@ from flask_cors import CORS, cross_origin
 import cv2
 import imutils
 import os
-from flask import Flask, render_template, Response, send_from_directory, request, jsonify, flash, redirect, url_for
+from flask import Flask, render_template, Response, send_from_directory, request, jsonify, flash, redirect, url_for, make_response
 from imutils.video import FPS
 import traceback
 from detect import detect_people, draw_people, draw_metrics
@@ -141,19 +141,19 @@ def upload_file():
     try:
         if 'file' not in request.files:
             flash('No file part')
-            return False
+            return make_response(False, 500)
         file = request.files['file']
         if file.filename == '':
             flash('No selected file')
-            return False
+            return make_response(False, 500)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.root_path, app.config['VIDEO_PATH'], filename))
             flash('File uploaded')
-            return True
+            return make_response(True, 200)
     except:
         traceback.print_exc()
-        return False
+        return make_response(False, 500)
 
 
 @app.route('/config', methods=['GET', 'POST'])
