@@ -1,5 +1,5 @@
 import json
-
+from flask_cors import CORS, cross_origin
 import cv2
 import imutils
 import os
@@ -104,9 +104,10 @@ def line():
 
 
 @app.route('/download/<path:filename>', methods=['GET', 'POST'])
+@cross_origin(origin='localhost')
 def download(filename):
     uploads = os.path.join(app.root_path, app.config['VIDEO_PATH'] + "output/")
-    return send_from_directory(directory=uploads, filename=filename + ".mp4", as_attachment=True)
+    return send_from_directory(directory=uploads, filename=filename + ".mp4",mimetype='application/octet-stream', as_attachment=True)
 
 
 @app.route('/config', methods=['GET', 'POST'])
