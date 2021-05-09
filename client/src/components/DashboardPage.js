@@ -9,36 +9,30 @@ import Paper from '@material-ui/core/Paper';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
 import Button from '@material-ui/core/Button';
+import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
+import Input from '@material-ui/core/Input';
 
 
 export default function DashboardPage() {
 
-      
-    // useEffect(() =>{
-    //     const handleVideoFeed = (e) => {
-    //         //e.preventDefault();
-    //         console.log("calling video_feed API");
-    //         axios.get("http://localhost:5000/video_feed")
-    //     // var targetDiv = document.getElementById('iframe');
-    //     // console.log("Iframe id: "+JSON.stringify(targetDiv.contentDocument));
+      const[show, setShow] = useState(false);
+      const[cameraName, setAddCameraName] = useState("");
+      const[cameraUrl,setAddCameraUrl] = useState("");
+      const[iframesrc, setIframeSrc] = useState("http://localhost:5000/video_feed/mall");
+      const[downUrl,setDownUrl] = useState("http://localhost:5000/download/mall")
+      const handleClose = () => setShow(false);
+      const handleShow = () => setShow(true);
 
-    //     // var targetDiv = document.getElementById('iframe');
-    //     // console.log("Iframe id: "+targetDiv.contentWindow.frames[0]);
-    //     console.log("calling axios on effect get video feed")
-    //     axios.get("http://localhost:5000/video_feed")
-    //         .then((response) => {
-    //             setVideo(response.data);
-    //         //   if (response.status !== 400) {
-    //         //   }
-    //         console.log("Response: "+response.data);
-    //         console.log("Response: "+response);
-    //         }).catch(err=>{
-    //             console.log(err);
-    //         });
-    //        }
-    //        handleVideoFeed();
-    // },[]);
-
+     
+      const handleSaveCamera = async() =>{
+        setIframeSrc(cameraUrl);
+        var d = cameraUrl.split("/");
+        console.log(d[4]);
+     //   `${backendUrl}/api/posts`
+        var durl = `http://localhost:5000/download/${d[4]}`;
+        setDownUrl(durl);
+        console.log("iframesrc:: "+cameraUrl);
+      }
 
     const handleDownloadVideo = (e) =>{
             e.preventDefault();
@@ -71,14 +65,64 @@ export default function DashboardPage() {
         <>
         <NavBarAfterLogin />
         <Container>
-        <br/><br/><br/><br/><br/>
+        
+        <br/><br/><br/>
         <Row>
+        <Modal style={{marginTop:"10px",opacity:3,marginLeft:"300px"}} show={show} onHide={handleClose} centered>
+                <Modal.Header style={{background:"#ccc",width:"800px",borderRadius:"5px"}}>
+                <Modal.Title style={{fontWeight:"bold",color:"#d1335a"}}>Provide url of your camera</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{background:"#FFFFFF"}} className="show-grid">
+                <Container>
+
+                <Row>
+                <Col style={{fontWeight:"bold",fontSize:"18px",borderRadius:"5px"}} xs={12} md={8}>
+                <Form.Group>
+                <Form.Control
+                style={{borderRadius:"3px",fontSize:"18px",width:"800px"}} 
+                type="text" 
+                onChange={e=> setAddCameraName(e.target.value)} 
+                value={cameraName} 
+                placeholder="Add camera name"
+                /> <br/><br/>
+                <Form.Control
+                style={{borderRadius:"3px",fontSize:"18px",width:"800px"}} 
+                type="text" 
+                onChange={e=> setAddCameraUrl(e.target.value)} 
+                value={cameraUrl} 
+                placeholder="Add camera url"
+                /> <br/>                   
+                </Form.Group>
+                </Col>
+                </Row>
+
+                </Container>
+                </Modal.Body>
+                <br/>
+                <Modal.Footer>
+                <Button style={{color: "black",background: "#ffffff",borderRadius: "5px",fontSize:"13px"}} onClick={handleClose}>
+                    Close
+                </Button>
+                <Button style={{color: "#ffffff",background: "#d1335a",borderRadius: "5px",fontSize:"13px"}} onClick={handleSaveCamera} >
+                    Save
+                </Button>
+                </Modal.Footer>
+        </Modal>
+        <Col style={{marginLeft:"300px"}}>
+          <Button
+          startIcon={<AddCircleOutlineRoundedIcon />}
+          onClick={handleShow}
+          style={{textTransform:"none",color:"#FFFFFF",background:"#d1335a"}} 
+          >
+          Change Camera</Button>
+        </Col>
+        <br/>
         <Col>
         <Paper
         style={{display:"inline-block",marginLeft:"300px",width:"700",height:"700"}} 
         elevation={3}>
         <iframe id="myiframe" 
-        src="http://localhost:5000/video_feed/mall" 
+        src={iframesrc} 
         width="700" height="395"/>
         {/* <img src="http://localhost:5000/video_feed"
         width="700" height="395"/> */}
@@ -102,13 +146,18 @@ export default function DashboardPage() {
       variant = "contained"
       color = "default"
       onClick={(e) => {
-        window.location.href='http://localhost:5000/download/test';
+        window.location.href={downUrl};
       }}
       >
         Download video
       </Button>
       </Col>
+                
+
         </Row>
+
+        
+
         </Container>
         </>
     )

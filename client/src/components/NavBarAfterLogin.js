@@ -14,6 +14,10 @@ import sodistantlogo from '../assets/sodistantlogo.svg';
 import cameralogo from '../assets/cameralogo.png';
 import camlogo from '../assets/camlogo.png';
 import cam from '../assets/cam.png';
+import BackupRoundedIcon from '@material-ui/icons/BackupRounded';
+import VisibilityRoundedIcon from '@material-ui/icons/VisibilityRounded';
+import {useHistory} from 'react-router-dom';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -28,12 +32,16 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 export default function NavBarAfterLogin() {
+    const history = useHistory();
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClose = () => {
         setAnchorEl(null);
       };
+    const handleUploadVideo = () =>{
+      history.push('/uploadvideo');
+    }
     const classes = useStyles();
     return (
     //     <div className={classes.root}>
@@ -101,8 +109,15 @@ export default function NavBarAfterLogin() {
             </div>
 
           )} */}
-
-            <Button style={{fontSize:"18px",padding:"13px 24px 13px 24px",textAlign:"center",lineHeight:"20.7px",float:"right",background:"#d1335a",color:"#FFFFFF",borderRadius:"10px"}} variant="contained">
+          <Button
+          startIcon={<BackupRoundedIcon />}
+          onClick={handleUploadVideo} 
+          style={{fontSize:"18px",padding:"13px 24px 13px 24px",textAlign:"center",lineHeight:"20.7px",float:"right",background:"#ccc",color:"#d1335a",borderRadius:"10px"}} variant="contained">
+            Upload video
+            </Button>&nbsp;&nbsp;
+            <Button
+            startIcon={<VisibilityRoundedIcon />}
+           style={{fontSize:"18px",padding:"13px 24px 13px 24px",textAlign:"center",lineHeight:"20.7px",float:"right",background:"#d1335a",color:"#FFFFFF",borderRadius:"10px"}} variant="contained">
             View Graph
             </Button> &nbsp;&nbsp;
         </Toolbar>
