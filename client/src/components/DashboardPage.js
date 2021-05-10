@@ -1,172 +1,194 @@
-import React from 'react'
-import NavBarAfterLogin from './NavBarAfterLogin'
-import { FormControl,Modal,Container,Row,Col,Image, Form, FormLabel} from 'react-bootstrap';
-import axios from 'axios';
-import { useState ,useEffect} from 'react'
-import CardMedia from '@material-ui/core/CardMedia';
+import React from "react";
+import NavBarAfterLogin from "./NavBarAfterLogin";
+import {
+  Modal,
+  Container,
+  Row,
+  Col,
+  Button,
+  InputGroup,
+  FormControl,
+  Form,
+} from "react-bootstrap";
+// import InputGroup from 'react-bootstrap/InputGroup'
+import axios from "axios";
+import { useState, useEffect } from "react";
+// import CardMedia from '@material-ui/core/CardMedia';
 //import 'VideoPlayer' from 'video-js';
-import Paper from '@material-ui/core/Paper';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
-import Button from '@material-ui/core/Button';
-import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
-import Input from '@material-ui/core/Input';
-import SwapHorizontalCircleRoundedIcon from '@material-ui/icons/SwapHorizontalCircleRounded';
-import {useHistory} from 'react-router-dom';
-
+import Paper from "@material-ui/core/Paper";
+// import GetAppIcon from '@material-ui/icons/GetApp';
+// import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
+// import Button from '@material-ui/core/Button';
+// import Input from '@material-ui/core/Input';
+// import SwapHorizontalCircleRoundedIcon from '@material-ui/icons/SwapHorizontalCircleRounded';
+import { useHistory } from "react-router-dom";
+const video_url="http://localhost:5000/video_feed/";
 export default function DashboardPage() {
   const history = useHistory();
 
-      const[show, setShow] = useState(false);
-      const[cameraName, setAddCameraName] = useState("");
-      const[cameraUrl,setAddCameraUrl] = useState("");
-      const[iframesrc, setIframeSrc] = useState("http://localhost:5000/video_feed/mall.mp4");
-      const[downUrl,setDownUrl] = useState("http://localhost:5000/download/mall")
-      const handleClose = () => setShow(false);
-      const handleShow = () => setShow(true);
+  const [show, setShow] = useState(false);
 
-     
-      const handleSaveCamera = async() =>{
-        setIframeSrc(cameraUrl);
-        var d = cameraUrl.split("/");
-        console.log(d[4]);
-     //   `${backendUrl}/api/posts`
-        var durl = `http://localhost:5000/download/${d[4]}`;
-        setDownUrl(durl);
-        console.log("iframesrc:: "+cameraUrl);
+  const [cameraName, setAddCameraName] = useState("");
+  const [iframesrc, setIframeSrc] = useState(
+    ""
+  );
+  const [videoName, setVideoName] = useState("");
+  const [video, setVideo] = useState("");
+  const [cameraNameArray,setCameraNameArray]=useState([]);
+  const [openUploadVideoSnack, setOpenUploadVideoSnack] = useState(false);
+  const [downUrl, setDownUrl] = useState("http://localhost:5000/download/mall");
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  // const handleSaveCamera = async () => {
+  //   setIframeSrc(cameraUrl);
+  //   var d = cameraUrl.split("/");
+  //   console.log(d[4]);
+  //   //   `${backendUrl}/api/posts`
+  //   var durl = `http://localhost:5000/download/${d[4]}`;
+  //   setDownUrl(durl);
+  //   console.log("iframesrc:: " + cameraUrl);
+  // };
+
+  const handleAddCamera = () => {
+    console.log("Add camera called");
+    history.push("/addcamera");
+  };
+
+  const handleDownloadVideo = (e) => {
+    e.preventDefault();
+    const requestOptions = {
+      headers: { "Content-Type": "video/mp4" },
+    };
+    console.log("calling download video API");
+    axios
+      .get("http://localhost:5000/download/mall.mp4")
+      .then((response) => {
+        console.log("Response: " + response.data);
+        console.log("Response: " + JSON.stringify(response.data.type));
+        var link = document.createElement("a");
+        link.href = URL.createObjectURL(new Blob([response]));
+        link.download = "file.zip";
+
+        document.body.appendChild(link);
+
+        link.click();
+        setTimeout(function () {
+          window.URL.revokeObjectURL(link);
+        }, 200);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const uploadImage = async (e) => {
+// let newArray = {...cameraNameArray};
+// console.log(typeof newArray );
+// newArray.push(cameraName);
+    setCameraNameArray([...cameraNameArray,{"name":cameraName, "file": videoName}]);  
+    var formData = new FormData();
+    formData.append("file", video);
+    axios.post("http://localhost:5000/upload", formData).then((response) => {
+      if (response.status === 200) {
+        setOpenUploadVideoSnack(true);
+        console.log(JSON.stringify(response.data));
+        handleClose();
       }
-
-      const handleAddCamera = () =>{
-        console.log("Add camera called");
-        history.push('/addcamera');
-      }
-
-    const handleDownloadVideo = (e) =>{
-            e.preventDefault();
-            const requestOptions = {
-             headers: { 'Content-Type': 'video/mp4'},
-            }
-            console.log("calling download video API");
-            axios.get("http://localhost:5000/download/mall.mp4")
-            .then((response) => {
-            console.log("Response: "+response.data);
-            console.log("Response: "+ JSON.stringify(response.data.type));
-            var link = document.createElement("a");
-              link.href = URL.createObjectURL(
-                new Blob([response])
-              );
-              link.download = "file.zip";
-
-              document.body.appendChild(link);
-
-              link.click();
-              setTimeout(function () {
-                window.URL.revokeObjectURL(link);
-              }, 200);
-            }).catch(err=>{
-                console.log(err);
-            });
-    }
+    });
     
-    return (
-        <>
-        <NavBarAfterLogin />
-        <Container>
-        
-        <br/>
-        <Modal style={{marginTop:"10px",opacity:3,marginLeft:"300px"}} show={show} onHide={handleClose} centered>
-                <Modal.Header style={{background:"#ccc",width:"800px",borderRadius:"5px"}}>
-                <Modal.Title style={{fontWeight:"bold",color:"#d1335a"}}>Provide url of your camera</Modal.Title>
-                </Modal.Header>
-                <Modal.Body style={{background:"#FFFFFF"}} className="show-grid">
-                <Container>
+  };
 
-                <Row>
-                <Col style={{fontWeight:"bold",fontSize:"18px",borderRadius:"5px"}} xs={12} md={8}>
-                <Form.Group>
-                <Form.Control
-                style={{borderRadius:"3px",fontSize:"18px",width:"800px"}} 
-                type="text" 
-                onChange={e=> setAddCameraName(e.target.value)} 
-                value={cameraName} 
-                placeholder="Add camera name"
-                /> <br/><br/>
-                <Form.Control
-                style={{borderRadius:"3px",fontSize:"18px",width:"800px"}} 
-                type="text" 
-                onChange={e=> setAddCameraUrl(e.target.value)} 
-                value={cameraUrl} 
-                placeholder="Add camera url"
-                /> <br/>                   
-                </Form.Group>
-                </Col>
-                </Row>
+  return (
+    <>
+      <NavBarAfterLogin />
+      <div>
+      {cameraNameArray.map((data) => (
+        <button onClick={()=>{setIframeSrc(video_url+data.file)} }>{data.name}</button>
+      ))}
+    </div>
+      <Container>
+        <Col style={{ marginLeft: "20px" }}>
+          <br />
+          {localStorage.setItem('camera_array',JSON.stringify(cameraNameArray))}
+          <Button variant="primary" onClick={handleShow}>
+            Add Camera
+          </Button>
 
-                </Container>
-                </Modal.Body>
-                <br/>
-                <Modal.Footer>
-                <Button style={{color: "black",background: "#ffffff",borderRadius: "5px",fontSize:"13px"}} onClick={handleClose}>
-                    Close
-                </Button>
-                <Button style={{color: "#ffffff",background: "#d1335a",borderRadius: "5px",fontSize:"13px"}} onClick={handleSaveCamera} >
-                    Save
-                </Button>
-                </Modal.Footer>
-        </Modal>
-        <br/>
-        <Col style={{marginLeft:"20px"}}>
-          <Button
-          startIcon={<SwapHorizontalCircleRoundedIcon />}
-          onClick={handleShow}
-          style={{textTransform:"none",color:"#FFFFFF",background:"#d1335a"}} 
-          >
-          Change Camera</Button><br/>
-          <Button
-          startIcon={<AddCircleOutlineRoundedIcon />}
-          onClick={handleAddCamera}
-          style={{textTransform:"none",color:"#d1335a",background:"#FFFFFF"}} 
-          >
-          Add Camera</Button>
+          <Modal show={show} onHide={handleClose}>
+            <Modal.Header>
+              <Modal.Title>Add Camera</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <InputGroup size="sm" className="mb-3">
+                <InputGroup.Prepend  >
+                  <InputGroup.Text id="inputGroup-sizing-default" > 
+                    Camera Name
+                  </InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                  aria-label="Default"
+                  aria-describedby="inputGroup-sizing-default"
+                  onChange={(e) => {setAddCameraName(e.target.value)}}
+                />
+              </InputGroup>
+              <Form>
+                <div className="mb-3">
+                  <input
+                    style={{ color: "#d1335a" }}
+                    placeholder="Upload video"
+                    type="file"
+                    id="videoUpload"
+                    onChange={(e) => {
+                      setVideo(e.target.files[0])
+                      setVideoName(e.target.files[0].name)
+                    }}
+                    multiple
+                  />
+                </div>
+              </Form>
+              <InputGroup size="sm" className="mb-3">
+                <InputGroup.Prepend>
+                  <InputGroup.Text id="inputGroup-sizing-default">
+                    Camera URL
+                  </InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                  aria-label="Default"
+                  aria-describedby="inputGroup-sizing-default"
+                />
+              </InputGroup>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+              <Button variant="primary" onClick={uploadImage}>
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </Col>
         <Row>
-        
-        <Col>
-        <Paper
-        style={{display:"inline-block",marginLeft:"300px",width:"700",height:"700"}} 
-        elevation={3}>
-        <iframe id="myiframe" 
-        src={iframesrc} 
-        width="700" height="395"/>
-        {/* <img src="http://localhost:5000/video_feed"
+          <Col>
+            <Paper
+              style={{
+                display: "inline-block",
+                marginLeft: "300px",
+                width: "700",
+                height: "700",
+              }}
+              elevation={3}
+            >
+              <iframe id="myiframe" src={iframesrc} width="700" height="395" /> 
+              {/* <img src="http://localhost:5000/video_feed"
         width="700" height="395"/> */}
-        </Paper>
-        </Col>
+            </Paper>
+          </Col>
         </Row>
-        <br/>
-
-        {/* <Button
-        style={{marginLeft:"300px"}}
-        variant="contained"
-        color="default"
-        onClick={handleDownloadVideo}
-        startIcon={<GetAppRoundedIcon />}
-      >
-        Download video
-      </Button> */}
-
-      {/* <Button
-      style={{marginLeft:"300px"}}
-      variant = "contained"
-      color = "default"
-      onClick={(e) => {
-        window.location.href="http://localhost:5000/download/mall"
-      }}
-      >
-        Download video
-      </Button> */}
-        </Container>
-        </>
-    )
-
-};
+        <br />
+      
+      </Container>
+    </>
+  );
+}
