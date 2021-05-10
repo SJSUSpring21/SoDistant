@@ -112,12 +112,7 @@ export default function NavBarAfterLogin() {
             </div>
 
           )} */}
-          <Button
-          startIcon={<BackupRoundedIcon />}
-          onClick={handleUploadVideo} 
-          style={{fontSize:"18px",padding:"13px 24px 13px 24px",textAlign:"center",lineHeight:"20.7px",float:"right",background:"#ccc",color:"#d1335a",borderRadius:"10px"}} variant="contained">
-            Upload video
-            </Button>&nbsp;&nbsp;
+          &nbsp;&nbsp;
             <Button
             startIcon={<VisibilityRoundedIcon />}
            style={{fontSize:"18px",padding:"13px 24px 13px 24px",textAlign:"center",lineHeight:"20.7px",float:"right",background:"#d1335a",color:"#FFFFFF",borderRadius:"10px"}} variant="contained">
