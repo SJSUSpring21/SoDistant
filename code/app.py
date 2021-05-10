@@ -10,6 +10,12 @@ from detect import detect_people, draw_people, draw_metrics
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+CORS(app)
+cors = CORS(app, resource={
+    r"/*":{
+        "origins":"*"
+    }
+})
 app.secret_key = os.urandom(24)
 app.config.from_pyfile('config.py')
 
@@ -141,16 +147,16 @@ def allowed_file(filename):
 def upload_file():
     try:
         if 'file' not in request.files:
-            flash('No file part')
-            return make_response(False, 500)
+            print('No file part')
+            return make_response("False", 500)
         file = request.files['file']
         if file.filename == '':
-            flash('No selected file')
-            return make_response(False, 500)
+            print('No selected file')
+            return make_response("False", 500)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.root_path, app.config['VIDEO_PATH'], filename))
-            flash('File uploaded')
+            print('File uploaded')
             return make_response("True", 200)
     except:
         traceback.print_exc()
