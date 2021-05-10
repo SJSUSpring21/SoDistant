@@ -19,8 +19,7 @@ cors = CORS(app, resource={
 app.secret_key = os.urandom(24)
 app.config.from_pyfile('config.py')
 
-settings = ['MODEL_PATH', 'MIN_CONF', 'NMS_THRESH', 'DISPLAY', 'THRESHOLD', 'USE_GPU', 'ALERT', 'MAIL', 'URL',
-            'MIN_DISTANCE', 'CV_INP_WIDTH', 'CV_INP_HEIGHT', 'WEIGHTS', 'CFG', 'VIDEO_PATH', 'OUTPUT']
+settings = ['MIN_CONF', 'NMS_THRESH', 'DISPLAY', 'THRESHOLD', 'USE_GPU', 'ALERT', 'MAIL', 'MIN_DISTANCE', 'WEIGHTS', 'CFG', 'OUTPUT']
 ALLOWED_EXTENSIONS = {'mp4'}
 
 
@@ -170,38 +169,9 @@ def config():
             return json.dumps(getSettings(app.config))
         else:
             data = request.json
-            if 'MODEL_PATH' in data:
-                app.config['MODEL_PATH'] = data['MODEL_PATH'],
-            if 'MIN_CONF' in data:
-                app.config['MIN_CONF'] = data['MIN_CONF']
-            if 'NMS_THRESH' in data:
-                app.config['NMS_THRESH'] = data['NMS_THRESH']
-            if 'DISPLAY' in data:
-                app.config['DISPLAY'] = data['DISPLAY']
-            if 'THRESHOLD' in data:
-                app.config['THRESHOLD'] = data['THRESHOLD']
-            if 'USE_GPU' in data:
-                app.config['USE_GPU'] = data['USE_GPU']
-            if 'ALERT' in data:
-                app.config['ALERT'] = data['ALERT']
-            if 'MAIL' in data:
-                app.config['MAIL'] = data['MAIL']
-            if 'URL' in data:
-                app.config['URL'] = data['URL']
-            if 'MIN_DISTANCE' in data:
-                app.config['MIN_DISTANCE'] = data['MIN_DISTANCE']
-            if 'CV_INP_WIDTH' in data:
-                app.config['CV_INP_WIDTH'] = data['CV_INP_WIDTH']
-            if 'CV_INP_HEIGHT' in data:
-                app.config['CV_INP_HEIGHT'] = data['CV_INP_HEIGHT']
-            if 'WEIGHTS' in data:
-                app.config['WEIGHTS'] = data['WEIGHTS']
-            if 'CFG' in data:
-                app.config['CFG'] = data['CFG']
-            if 'VIDEO_PATH' in data:
-                app.config['VIDEO_PATH'] = data['VIDEO_PATH']
-            if 'OUTPUT' in data:
-                app.config['OUTPUT'] = data['OUTPUT']
+            for key in settings:
+                if key in data:
+                    app.config[data] = data[key]
             return json.dumps(getSettings(app.config))
     except:
         traceback.print_exc()
