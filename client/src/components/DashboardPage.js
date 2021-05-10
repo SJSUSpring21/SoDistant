@@ -11,14 +11,16 @@ import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
 import Button from '@material-ui/core/Button';
 import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
 import Input from '@material-ui/core/Input';
-
+import SwapHorizontalCircleRoundedIcon from '@material-ui/icons/SwapHorizontalCircleRounded';
+import {useHistory} from 'react-router-dom';
 
 export default function DashboardPage() {
+  const history = useHistory();
 
       const[show, setShow] = useState(false);
       const[cameraName, setAddCameraName] = useState("");
       const[cameraUrl,setAddCameraUrl] = useState("");
-      const[iframesrc, setIframeSrc] = useState("http://localhost:5000/video_feed/mall");
+      const[iframesrc, setIframeSrc] = useState("http://localhost:5000/video_feed/mall.mp4");
       const[downUrl,setDownUrl] = useState("http://localhost:5000/download/mall")
       const handleClose = () => setShow(false);
       const handleShow = () => setShow(true);
@@ -32,6 +34,11 @@ export default function DashboardPage() {
         var durl = `http://localhost:5000/download/${d[4]}`;
         setDownUrl(durl);
         console.log("iframesrc:: "+cameraUrl);
+      }
+
+      const handleAddCamera = () =>{
+        console.log("Add camera called");
+        history.push('/addcamera');
       }
 
     const handleDownloadVideo = (e) =>{
@@ -66,8 +73,7 @@ export default function DashboardPage() {
         <NavBarAfterLogin />
         <Container>
         
-        <br/><br/><br/>
-        <Row>
+        <br/>
         <Modal style={{marginTop:"10px",opacity:3,marginLeft:"300px"}} show={show} onHide={handleClose} centered>
                 <Modal.Header style={{background:"#ccc",width:"800px",borderRadius:"5px"}}>
                 <Modal.Title style={{fontWeight:"bold",color:"#d1335a"}}>Provide url of your camera</Modal.Title>
@@ -108,28 +114,35 @@ export default function DashboardPage() {
                 </Button>
                 </Modal.Footer>
         </Modal>
-        <Col style={{marginLeft:"300px"}}>
+        <br/>
+        <Col style={{marginLeft:"20px"}}>
           <Button
-          startIcon={<AddCircleOutlineRoundedIcon />}
+          startIcon={<SwapHorizontalCircleRoundedIcon />}
           onClick={handleShow}
           style={{textTransform:"none",color:"#FFFFFF",background:"#d1335a"}} 
           >
-          Change Camera</Button>
+          Change Camera</Button><br/>
+          <Button
+          startIcon={<AddCircleOutlineRoundedIcon />}
+          onClick={handleAddCamera}
+          style={{textTransform:"none",color:"#d1335a",background:"#FFFFFF"}} 
+          >
+          Add Camera</Button>
         </Col>
-        <br/>
+        <Row>
+        
         <Col>
         <Paper
         style={{display:"inline-block",marginLeft:"300px",width:"700",height:"700"}} 
         elevation={3}>
         <iframe id="myiframe" 
         src={iframesrc} 
-        src="http://localhost:5000/video_feed/mall.mp4" 
         width="700" height="395"/>
         {/* <img src="http://localhost:5000/video_feed"
         width="700" height="395"/> */}
         </Paper>
         </Col>
-        <Col>
+        </Row>
         <br/>
 
         {/* <Button
@@ -142,7 +155,7 @@ export default function DashboardPage() {
         Download video
       </Button> */}
 
-      <Button
+      {/* <Button
       style={{marginLeft:"300px"}}
       variant = "contained"
       color = "default"
@@ -151,14 +164,7 @@ export default function DashboardPage() {
       }}
       >
         Download video
-      </Button>
-      </Col>
-                
-
-        </Row>
-
-        
-
+      </Button> */}
         </Container>
         </>
     )

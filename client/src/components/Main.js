@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Route, Switch} from 'react-router-dom';
+import AddCamera from './AddCamera';
 import DashboardPage from './DashboardPage';
 import LandingPage from './LandingPage';
 import Settings from './Settings';
@@ -14,7 +15,8 @@ class Main extends Component {
                 <Route path="/landing" component={LandingPage}/>
                 <Route path="/dashboard" component={DashboardPage}/>               
                 <Route path="/settings" component={Settings}/>               
-                <Route path="/uploadvideo" component={UploadVideo}/>               
+                <Route path="/uploadvideo" component={UploadVideo}/>
+                <Route path="/addcamera" component={AddCamera}/>                              
             </div>
         )
     }
