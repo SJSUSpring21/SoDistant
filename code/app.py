@@ -10,6 +10,7 @@ from detect import detect_people, draw_people, draw_metrics
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 app.config.from_pyfile('config.py')
 
 settings = ['MODEL_PATH', 'MIN_CONF', 'NMS_THRESH', 'DISPLAY', 'THRESHOLD', 'USE_GPU', 'ALERT', 'MAIL', 'URL',
@@ -150,10 +151,10 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.root_path, app.config['VIDEO_PATH'], filename))
             flash('File uploaded')
-            return make_response(True, 200)
+            return make_response("True", 200)
     except:
         traceback.print_exc()
-        return make_response(False, 500)
+        return make_response("False", 500)
 
 
 @app.route('/config', methods=['GET', 'POST'])
