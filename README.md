@@ -14,5 +14,5 @@ In this Social Distancing Detector, We will be using the weights of the YOLO v3 
 
 
 #### Architecture Diagram:
-![Project_Arch_Diagram-Page-2](https://user-images.githubusercontent.com/11073524/110589934-f6418d00-812b-11eb-9e6d-60e5dc394471.png)
+![Architectural Diagram New](https://user-images.githubusercontent.com/11073524/117789502-43f67680-b1fd-11eb-8d94-938d56d78f96.png)
 
