@@ -14,6 +14,7 @@ import {
 } from "react-bootstrap";
 // import InputGroup from 'react-bootstrap/InputGroup'
 import axios from "axios";
+import Plot from "react-plotly.js";
 import { useState, useEffect } from "react";
 // import CardMedia from '@material-ui/core/CardMedia';
 //import 'VideoPlayer' from 'video-js';
@@ -121,6 +122,72 @@ export default function DashboardPage() {
     });
   };
 
+  const [xValues, setXValues] = useState(0);
+
+    useEffect(() => {
+        fetch('http://localhost:5000/dashboard').then(res => res.json()).then(data => {
+        console.log('---', data)
+        setXValues(data.time);
+        });
+    }, []);
+
+    const [yValues, setYValues] = useState(0);
+
+    useEffect(() => {
+        fetch('http://localhost:5000/dashboard1').then(res => res.json()).then(data => {
+        console.log('---', data)
+        setYValues(data.time1);
+        });
+    }, []);
+
+    const [timeValues, setTimeValues] = useState(0);
+
+    useEffect(() => {
+        fetch('http://localhost:5000/dashboard2').then(res => res.json()).then(data => {
+        console.log('---', data)
+        setTimeValues(data.time2);
+        });
+    }, []);
+
+    const xlen = []
+    for(let i=1; i<xValues.length; i++){
+        xlen.push(i)
+    }
+    console.log('i----------', xlen)
+
+    const ylen = []
+    for(let i=1; i<yValues.length; i++){
+        ylen.push(i)
+    }
+
+    const [data, setData] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
+
+//    fetch("./violations.csv").then(function (response) {
+//      return response.text();
+//   })
+//   .then(function (text) {
+////	csvToSeries(text);
+//	console.log('file data', text.split('\n')[0][0])
+//   })
+//   .catch(function (error) {
+//      //Something went wrong
+//      console.log(error);
+//   });
+//
+//function csvToSeries(text) {
+//   console.log(text);
+//}
+
+//    useEffect(() => {
+//    d3.csvParse("../../../code/violations.csv").then((d) => {
+//      setData(d);
+//      setLoading(false);
+//    });
+//    console.log('file data', data)
+//    return () => undefined;
+//  }, []);
+
   return (
     <>
       <NavBarAfterLogin />
@@ -214,6 +281,30 @@ export default function DashboardPage() {
               </Paper>
             </Col>
           </Row>
+          <Plot
+          data={[{
+            x: timeValues,
+            y: xValues
+          }]}
+          layout={{ width: 1820, height: 640, title: "Graph Example", xaxis: {title: 'Duration'}, yaxis: {title: 'No. of People', titlefont: {
+                     family: 'Courier New, monospace',
+                     size: 18,
+                     color: '#7f7f7f'
+                 }} }}
+          graphDiv="graph"
+        />
+        <Plot
+          data={[{
+            x: ylen,
+            y: yValues
+          }]}
+          layout={{ width: 1820, height: 640, title: "Graph Example", xaxis: {title: 'Duration'}, yaxis: {title: 'Violations', titlefont: {
+                     family: 'Courier New, monospace',
+                     size: 18,
+                     color: '#7f7f7f'
+                 }} }}
+          graphDiv="graph"
+        />
           <br />
         </Col>
         <Modal show={show} onHide={handleClose}>

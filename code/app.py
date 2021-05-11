@@ -9,6 +9,9 @@ from imutils.video import FPS
 import traceback
 from detect import detect_people, draw_people, draw_metrics
 from werkzeug.utils import secure_filename
+from datetime import datetime
+import csv
+
 
 app = Flask(__name__)
 CORS(app)
@@ -23,6 +26,10 @@ app.config.from_pyfile('config.py')
 settings = ['MIN_DISTANCE', 'THRESHOLD', 'ALERT', 'OUTPUT', 'DISPLAY', 'USE_GPU', 'MAIL', 'MIN_CONF', 'NMS_THRESH',
             'WEIGHTS', 'CFG']
 ALLOWED_EXTENSIONS = {'mp4'}
+
+xVals = []
+yVals = []
+currentTime = []
 
 
 def getSettings(config_dict):
@@ -67,9 +74,16 @@ def gen_frames(filename):
                 frame = imutils.resize(frame, width=700, height=700)
                 results, no_of_people = detect_people(frame, net, ln, personIdx=LABELS.index("person"))
                 violations = draw_people(frame, results)
+                xVals.append(no_of_people)
+                yVals.append(len(violations))
+                timestamp = datetime.utcnow().strftime('%H:%M:%S')
+                currentTime.append(timestamp)
                 if draw_metrics(frame, violations, no_of_people, mailSent) is True:
                     mailSent = True
-
+                data = [no_of_people, len(violations), timestamp]
+                with open('../client/src/assets/violations.csv', mode='a', newline='') as csv_file:
+                    csv_writer = csv.writer(csv_file)
+                    csv_writer.writerow(data)
                 ret, buffer = cv2.imencode('.jpg', frame)
                 yield b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n'
                 fps.update()
@@ -96,6 +110,27 @@ def gen_frames(filename):
 @app.route('/video_feed/<path:filename>')
 def video_feed(filename):
     return Response(gen_frames(filename), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/dashboard')
+@cross_origin()
+def get_current_time():
+    print('inside')
+    return {'time': xVals}
+
+
+@app.route('/dashboard1')
+@cross_origin()
+def get_current_time1():
+    print('inside')
+    return {'time1': yVals}
+
+
+@app.route('/dashboard2')
+@cross_origin()
+def get_current_time2():
+    print('inside')
+    return {'time2': currentTime}
 
 
 @app.route('/')
