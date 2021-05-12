@@ -272,14 +272,15 @@ export default function DashboardPage() {
                         if (ComponentDidMountState === true) {
                           setComponentDidMount(false);
                         }
+                        setXValues([]);
+                        setYValues([]);
                         if (cameraNameArray.length === 0) {
                           setIframeSrc("");
                         } else {
                           setIframeSrc(video_url + cameraNameArray[0].file);
                           getData(cameraNameArray[0].file);
                         }
-                        setXValues([]);
-                        setYValues([]);
+                        
                       }}
                     >
                       X
@@ -298,7 +299,7 @@ export default function DashboardPage() {
         <Col sm={6}>
           <Row>
             <Card className="root w-25 m-2 cardColor">
-              <CardHeader title= " # people" />
+              <CardHeader title= "# People" />
               <CardContent>
                 <Typography
                   variant="body2"
