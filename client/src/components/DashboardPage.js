@@ -234,16 +234,13 @@ export default function DashboardPage() {
             setTimeValues(data.time2);
           });
           count++;
-          if (count === 5) {
-            clearInterval(refreshIntervalId);
-          }
-          console.log(xValues[xValues.length-1]);
-          if(xValues != undefined || xValues.length !== 0 || xValues[xValues.length-1] === '#'){
+          console.log(xValues[count]);
+          if(xValues[count] === '#'){
             console.log("stopped");
             clearInterval(refreshIntervalId);
           }
 
-      }, 1000)
+      }, 100)
   };
 
   //
@@ -412,7 +409,7 @@ export default function DashboardPage() {
           <Plot
             data={[
               {
-                x: timeValues,
+                x: "time",
                 y: xValues,
               },
             ]}
