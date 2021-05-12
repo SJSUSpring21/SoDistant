@@ -200,6 +200,28 @@ export default function DashboardPage() {
       setIframeSrc(video_url + tempArray[0].file);
     }
   }
+
+  // new changes
+  const getData = (abc) =>{
+
+
+    fetch('http://localhost:5000/dashboard').then(res => res.json()).then(data => {
+        setXValues(data.time);
+        });
+
+        
+
+    fetch('http://localhost:5000/dashboard1').then(res => res.json()).then(data => {
+      setYValues(data.time1);
+      });
+
+      console.log(xValues.len);
+      console.log(yValues.len);
+
+
+  }
+
+  //
   useEffect(() => {
     loadCameraArrayFromLocalStorage();
   }, []);
@@ -251,6 +273,11 @@ export default function DashboardPage() {
                     <label
                       onClick={() => {
                         setIframeSrc(video_url + data.file);
+                        setInterval(()=>{
+                          getData(data.file)
+                        },1000)
+
+                        
                       }}
                     >
                       {data.name}
