@@ -77,7 +77,7 @@ export default function NavBarAfterLogin() {
              />
             </IconButton>
             <Typography variant="h4" className={classes.title}>
-              <Link style={{textDecoration:"none", color:"#d1335a",fontFamily:"-apple-system, BlinkMacSystemFont, sans-serif"}} to="dashboard">SoDistant</Link>
+              <Link style={{textDecoration:"none", color:"#d1335a",fontFamily:"-apple-system, BlinkMacSystemFont, sans-serif"}} to="/">SoDistant</Link>
             </Typography>
           {/* {(
             <div>

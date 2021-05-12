@@ -14,10 +14,10 @@ class Main extends Component {
       <div>
           <BrowserRouter>
         {/*Render Different Component based on Route*/}
-        <Route path="/landing" component={LandingPage} />
-        <Route path="/dashboard" component={DashboardPage} />
-        <Route path="/settings" component={Settings} />
-        <Route path="/addcamera" component={AddCamera} />
+        <Route exact path="/landing" component={LandingPage} />
+        <Route exact path="/" component={DashboardPage} />
+        <Route exact path="/settings" component={Settings} />
+        <Route exact path="/addcamera" component={AddCamera} />
         </BrowserRouter>
       </div>
     );

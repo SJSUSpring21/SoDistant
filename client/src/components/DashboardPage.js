@@ -96,27 +96,28 @@ export default function DashboardPage() {
 
   const [xValues, setXValues] = useState(0);
 
-    useEffect(() => {
-        fetch('http://localhost:5000/dashboard').then(res => res.json()).then(data => {
-        setXValues(data.time);
-        });
-    }, []);
+//    useEffect(() => {
+//        fetch('http://localhost:5000/dashboard').then(res => res.json()).then(data => {
+//        setXValues(data.time);
+//        });
+//    }, []);
 
     const [yValues, setYValues] = useState(0);
 
-    useEffect(() => {
-        fetch('http://localhost:5000/dashboard1').then(res => res.json()).then(data => {
-        setYValues(data.time1);
-        });
-    }, []);
+//    useEffect(() => {
+//        fetch('http://localhost:5000/dashboard1').then(res => res.json()).then(data => {
+//        setYValues(data.time1);
+//        });
+//    }, []);
 
     const [timeValues, setTimeValues] = useState(0);
 
-    useEffect(() => {
-        fetch('http://localhost:5000/dashboard2').then(res => res.json()).then(data => {
-        setTimeValues(data.time2);
-        });
-    }, []);
+//    useEffect(() => {
+//        fetch('http://localhost:5000/dashboard2').then(res => res.json()).then(data => {
+//        setTimeValues(data.time2);
+//        });
+//    }, []);
+//    console.log(timeValues)
 
     const xlen = []
     if(xValues.length >=550){
@@ -144,10 +145,42 @@ export default function DashboardPage() {
     let currentPeople = 0
     const lenX = xValues.length
     currentPeople = xValues[lenX-2]
+    if(currentPeople === undefined){currentPeople = 0}
 
     let violationCount = 0
     const lenY = yValues.length
     violationCount = yValues[lenY-2]
+    if(violationCount === undefined){violationCount = 0}
+
+    let thresholdCount = 0
+    if(thresholdCount===undefined || thresholdCount === 0){
+        thresholdCount = 0
+    }
+
+    let xFinal = []
+    let yFinal = []
+
+     useEffect(() => {
+        setInterval(fetch('http://localhost:5000/dashboard1').then(res => res.json()).then(data => {
+        console.log('y------------------',data.time1)
+        yFinal.push(data.time1)
+        console.log("-----", yFinal)
+//        setYValues(yValues);
+        }).catch(err => {console.log(err)}), 5000);
+    }, []);
+
+    useEffect(() => {
+        setInterval(fetch('http://localhost:5000/dashboard').then(res => res.json()).then(data => {
+        console.log('x------------------',data.time)
+        await xFinal.push(data.time)
+        console.log('==========', xFinal)
+//        setXValues(xValues)
+        }).catch(err => {console.log(err)}), 6000)
+    }, []);
+    xFinal.push(xValues)
+    yFinal.push(yValues)
+
+
 
 //    const [data, setData] = React.useState([]);
 //    useEffect(() => {
@@ -340,7 +373,7 @@ export default function DashboardPage() {
                   component="p"
                   className="text-white"
                   >
-                   Number
+                   {thresholdCount}
                  </Typography>
                </CardContent>
             </Card>

@@ -41,6 +41,7 @@ print(getSettings(app.config))
 
 
 def gen_frames(filename):
+    currentTime = []
     csvFile = filename.split('.')[0] + '.csv'
     csvFile1.append(csvFile)
     try:
@@ -104,8 +105,8 @@ def gen_frames(filename):
     except:
         traceback.print_exc()
     finally:
-        # xVals.append("#")
-        # yVals.append("#")
+        xVals.append("#")
+        yVals.append("#")
         data = ["#", "#", "#"]
         with open('../client/src/assets/violations.csv', mode='a', newline='') as csv_file:
             csv_writer = csv.writer(csv_file)
@@ -124,8 +125,13 @@ def video_feed(filename):
 @app.route('/dashboard')
 @cross_origin()
 def get_current_time():
+    global xVals
+    print('inside', xVals)
+    x = xVals.pop(0)
+    if (x == '#'):
+        xVals = []
     print('inside')
-    return {'time': xVals}
+    return {'time': x}
 
 
 @app.route('/getFile')
@@ -138,8 +144,12 @@ def get_current_file():
 @app.route('/dashboard1')
 @cross_origin()
 def get_current_time1():
-    print('inside')
-    return {'time1': yVals}
+    global yVals
+    print('inside1', yVals)
+    y = yVals.pop(0)
+    if(y == '#'):
+        yVals = []
+    return {'time1': y}
 
 
 @app.route('/dashboard2')
