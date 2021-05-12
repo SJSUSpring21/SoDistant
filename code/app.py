@@ -28,7 +28,7 @@ ALLOWED_EXTENSIONS = {'mp4'}
 
 xVals = []
 yVals = []
-currentTime = []
+# currentTime = []
 
 
 def getSettings(config_dict):
@@ -41,7 +41,7 @@ print(getSettings(app.config))
 def gen_frames(filename):
     xVals.clear()
     yVals.clear()
-    currentTime.clear()
+    # currentTime.clear()
     try:
         with app.app_context():
             mailSent = False
@@ -79,7 +79,7 @@ def gen_frames(filename):
                 xVals.append(no_of_people)
                 yVals.append(len(violations))
                 timestamp = datetime.utcnow().strftime('%H:%M:%S')
-                currentTime.append(timestamp)
+                # currentTime.append(timestamp)
                 if draw_metrics(frame, violations, no_of_people, mailSent) is True:
                     mailSent = True
                 ret, buffer = cv2.imencode('.jpg', frame)
@@ -118,10 +118,10 @@ def get_current_time():
     return {'time': xVals}
 
 
-@app.route('/getFile')
-@cross_origin()
-def get_current_file():
-    return {'file': csvFile1}
+# @app.route('/getFile')
+# @cross_origin()
+# def get_current_file():
+#     return {'file': csvFile1}
 
 
 @app.route('/dashboard1')
@@ -130,10 +130,10 @@ def get_current_time1():
     return {'time1': yVals}
 
 
-@app.route('/dashboard2')
-@cross_origin()
-def get_current_time2():
-    return {'time2': currentTime}
+# @app.route('/dashboard2')
+# @cross_origin()
+# def get_current_time2():
+#     return {'time2': currentTime}
 
 
 @app.route('/')

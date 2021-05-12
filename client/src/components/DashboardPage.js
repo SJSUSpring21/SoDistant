@@ -174,11 +174,11 @@ export default function DashboardPage() {
           setYValues(data.time1);
         });
 
-      fetch("http://localhost:5000/dashboard2")
-        .then((res) => res.json())
-        .then((data) => {
-          setTimeValues(data.time2);
-        });
+      // fetch("http://localhost:5000/dashboard2")
+      //   .then((res) => res.json())
+      //   .then((data) => {
+      //     setTimeValues(data.time2);
+      //   });
 
       count++;
     
@@ -188,7 +188,7 @@ export default function DashboardPage() {
       //   clearInterval(refreshIntervalId);
       // }
      
-    }, 200);     
+    }, 500);     
   };
 
   //
@@ -276,6 +276,7 @@ export default function DashboardPage() {
                           setIframeSrc("");
                         } else {
                           setIframeSrc(video_url + cameraNameArray[0].file);
+                          getData(cameraNameArray[0].file);
                         }
                         setXValues([]);
                         setYValues([]);
