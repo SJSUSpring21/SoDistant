@@ -76,7 +76,7 @@ export default function NavBarAfterLogin() {
           color="inherit"
           aria-label="menu"
         >
-          <Link to="dashboard">
+          <Link to="/">
             <Image style={{ width: "110px", height: "45px" }} src={logo} />
           </Link>
         </IconButton>

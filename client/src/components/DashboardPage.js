@@ -133,7 +133,11 @@ export default function DashboardPage() {
 
   const [threshold, setThreshold] = useState([]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {fetch("http://localhost:5000/config")
+        .then((res) => res.json())
+        .then((data) => {
+          setThreshold(data.THRESHOLD);
+        });}, []);
 
   function loadCameraArrayFromLocalStorage() {
     let tempArray = JSON.parse(window.localStorage.getItem("camera_array"));
@@ -169,21 +173,11 @@ export default function DashboardPage() {
           setTimeValues(data.time2);
         });
 
-      fetch("http://localhost:5000/config")
-        .then((res) => res.json())
-        .then((data) => {
-          setThreshold(data.THRESHOLD);
-        });
       count++;
       if (xValues[count] === "#") {
         console.log("stopped");
         clearInterval(refreshIntervalId);
       }
-      // console.log(xValues[xValues.length-1]);
-      // if(xValues != undefined || xValues.length !== 0 || xValues[xValues.length-1] === '#'){
-      //   console.log("stopped");
-      //   clearInterval(refreshIntervalId);
-      // }
     }, 100);
   };
 
