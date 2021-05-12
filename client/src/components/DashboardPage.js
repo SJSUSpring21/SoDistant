@@ -95,33 +95,33 @@ export default function DashboardPage() {
 
   const [xValues, setXValues] = useState([]);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/dashboard")
-      .then((res) => res.json())
-      .then((data) => {
-        setXValues(data.time);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://localhost:5000/dashboard")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setXValues(data.time);
+  //     });
+  // }, []);
 
   const [yValues, setYValues] = useState([]);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/dashboard1")
-      .then((res) => res.json())
-      .then((data) => {
-        setYValues(data.time1);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://localhost:5000/dashboard1")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setYValues(data.time1);
+  //     });
+  // }, []);
 
   const [timeValues, setTimeValues] = useState([]);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/dashboard2")
-      .then((res) => res.json())
-      .then((data) => {
-        setTimeValues(data.time2);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://localhost:5000/dashboard2")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setTimeValues(data.time2);
+  //     });
+  // }, []);
 
   let currentPeople = 0;
   const lenX = xValues.length;
@@ -149,6 +149,8 @@ export default function DashboardPage() {
   }
 
   let count = 0;
+
+  
   // new changes
   const getData = (fileName) => {
     var refreshIntervalId = setInterval(() => {
@@ -158,6 +160,11 @@ export default function DashboardPage() {
       fetch("http://localhost:5000/dashboard")
         .then((res) => res.json())
         .then((data) => {
+          if(data.time[data.time.length-1] === '#'){
+            console.log("stopped");
+       clearInterval(refreshIntervalId);
+
+          }
           setXValues(data.time);
         });
 
@@ -174,11 +181,14 @@ export default function DashboardPage() {
         });
 
       count++;
-      if (xValues[count] === "#") {
-        console.log("stopped");
-        clearInterval(refreshIntervalId);
-      }
-    }, 100);
+    
+
+      // if (xValues[count] === "#") {
+      //   console.log("stopped");
+      //   clearInterval(refreshIntervalId);
+      // }
+     
+    }, 200);     
   };
 
   //
@@ -209,6 +219,7 @@ export default function DashboardPage() {
       }
     });
   };
+ // console.log(xValues);
 
   return (
     <>
@@ -283,10 +294,10 @@ export default function DashboardPage() {
             )} */}
           </div>
         </Col>
-        <Col sm={10}>
+        <Col sm={6}>
           <Row>
-            <Card className="root w-25 m-5 cardColor">
-              <CardHeader title="Number of peoples" />
+            <Card className="root w-25 m-2 cardColor">
+              <CardHeader title= " # people" />
               <CardContent>
                 <Typography
                   variant="body2"
@@ -298,7 +309,7 @@ export default function DashboardPage() {
                 </Typography>
               </CardContent>
             </Card>
-            <Card className="root w-25 m-5 cardColor">
+            <Card className="root w-25 m-2 cardColor">
               <CardHeader title="Violations" />
               <CardContent>
                 <Typography
@@ -311,7 +322,7 @@ export default function DashboardPage() {
                 </Typography>
               </CardContent>
             </Card>
-            <Card className="root w-25 m-5 cardColor">
+            <Card className="root w-25 m-2 cardColor">
               <CardHeader title="Threshold" />
               <CardContent>
                 <Typography
@@ -324,22 +335,30 @@ export default function DashboardPage() {
                 </Typography>
               </CardContent>
             </Card>
-          <Col>
+          <Row>
             <Paper
               style={{
                 display: "inline-block",
-                marginLeft: "10px",
+               // marginLeft: "10px",
                 marginTop: "35px",
-                width: "700",
-                height: "700",
+                width: '100%',
+//height: "700",
               }}
               elevation={3}
             >
-              <iframe id="myiframe" src={iframesrc} width="700" height="395" />
+              <iframe id="myiframe" src={iframesrc} 
+              width= '100%' height="395"
+               />
             </Paper>
-          </Col>
           </Row>
-          <Plot
+
+         
+          </Row>
+          <br />
+        </Col>
+        <Col sm={4} style={{paddingTop: '10px'}}>
+
+             <Plot
             data={[
               {
                 x: "time",
@@ -351,8 +370,8 @@ export default function DashboardPage() {
               },
             ]}
             layout={{
-              width: 720,
-              height: 640,
+            width: '500',
+            height: 400,
               title: "Analysis of number of people",
               xaxis: { title: "Duration" },
               yaxis: {
@@ -374,8 +393,8 @@ export default function DashboardPage() {
               },
             ]}
             layout={{
-              width: 720,
-              height: 640,
+             width: '500',
+              height: 400,
               title: "Analysis of violations",
               xaxis: { title: "Duration" },
               yaxis: {
@@ -389,8 +408,11 @@ export default function DashboardPage() {
             }}
             graphDiv="graph"
           />
-          <br />
-        </Col>
+         
+
+            </Col>
+
+       
         <Modal show={show} onHide={handleClose}>
           <Modal.Header>
             <Modal.Title>Add Camera</Modal.Title>
