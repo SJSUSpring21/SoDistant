@@ -13,6 +13,14 @@ import {
   Form,
 } from "react-bootstrap";
 // import InputGroup from 'react-bootstrap/InputGroup'
+//import file from "../assets/test.csv"
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 import Plot from "react-plotly.js";
 import { useState, useEffect } from "react";
@@ -86,6 +94,104 @@ export default function DashboardPage() {
       });
   };
 
+  const [xValues, setXValues] = useState(0);
+
+    useEffect(() => {
+        fetch('http://localhost:5000/dashboard').then(res => res.json()).then(data => {
+        setXValues(data.time);
+        });
+    }, []);
+
+    const [yValues, setYValues] = useState(0);
+
+    useEffect(() => {
+        fetch('http://localhost:5000/dashboard1').then(res => res.json()).then(data => {
+        setYValues(data.time1);
+        });
+    }, []);
+
+    const [timeValues, setTimeValues] = useState(0);
+
+    useEffect(() => {
+        fetch('http://localhost:5000/dashboard2').then(res => res.json()).then(data => {
+        setTimeValues(data.time2);
+        });
+    }, []);
+
+    const xlen = []
+    if(xValues.length >=550){
+        for(let i=1; i<550; i++){
+        xlen.push(i)
+    }
+    }
+    else
+    {for(let i=1; i<xValues.length; i++){
+        xlen.push(i)
+    }}
+
+
+    const ylen = []
+    if(yValues.length >=550){
+        for(let i=1; i<550; i++){
+        ylen.push(i)
+    }
+    }
+    else{
+    for(let i=1; i<yValues.length; i++){
+        ylen.push(i)
+    }}
+
+    let currentPeople = 0
+    const lenX = xValues.length
+    currentPeople = xValues[lenX-2]
+
+    let violationCount = 0
+    const lenY = yValues.length
+    violationCount = yValues[lenY-2]
+
+//    const [data, setData] = React.useState([]);
+//    useEffect(() => {
+//        fetch('http://localhost:5000/getFile').then(res => res.json()).then(data => {
+//        console.log('---', data)
+//        setData(data.file);
+//        });
+//    }, []);
+//    console.log('-2-2--2-2-', data)
+//    const [loading, setLoading] = React.useState(true);
+//
+//    const [fileName, setFileName] = React.useState([]);
+
+//    const csvFile = data[0]
+//    console.log('ccccc', csvFile)
+//    fetch(file).then(function (response) {
+//      return response.text();
+//   })
+//   .then(function (text) {
+//	csvToSeries(text);
+////	console.log('file data', text)
+//   })
+//   .catch(function (error) {
+//      //Something went wrong
+//      console.log(error);
+//   });
+//
+//   let valuesX = []
+//   let valuesY = []
+//
+//    function csvToSeries(text) {
+//       console.log('sadfsdf', text.split('\n')[0].split(','))
+//       let xVal = text.split('\n')
+//       console.log(xVal)
+//       for(let j=0; j < xVal.length; j++){
+//            if(xVal[j].split(',')[0] === "#"){
+//                break
+//            }
+//            valuesX.push(xVal[j].split(',')[0])
+//            valuesY.push(xVal[j].split(',')[1])
+//       }
+//       console.log('xvalaldjflkasjdf;lsafd', valuesX)
+//    }
+
   function loadCameraArrayFromLocalStorage() {
     let tempArray = JSON.parse(window.localStorage.getItem("camera_array"));
     if (tempArray !== null && tempArray.length > 0) {
@@ -122,91 +228,26 @@ export default function DashboardPage() {
     });
   };
 
-  const [xValues, setXValues] = useState(0);
-
-    useEffect(() => {
-        fetch('http://localhost:5000/dashboard').then(res => res.json()).then(data => {
-        console.log('---', data)
-        setXValues(data.time);
-        });
-    }, []);
-
-    const [yValues, setYValues] = useState(0);
-
-    useEffect(() => {
-        fetch('http://localhost:5000/dashboard1').then(res => res.json()).then(data => {
-        console.log('---', data)
-        setYValues(data.time1);
-        });
-    }, []);
-
-    const [timeValues, setTimeValues] = useState(0);
-
-    useEffect(() => {
-        fetch('http://localhost:5000/dashboard2').then(res => res.json()).then(data => {
-        console.log('---', data)
-        setTimeValues(data.time2);
-        });
-    }, []);
-
-    const xlen = []
-    for(let i=1; i<xValues.length; i++){
-        xlen.push(i)
-    }
-    console.log('i----------', xlen)
-
-    const ylen = []
-    for(let i=1; i<yValues.length; i++){
-        ylen.push(i)
-    }
-
-    const [data, setData] = React.useState([]);
-    const [loading, setLoading] = React.useState(true);
-
-//    fetch("./violations.csv").then(function (response) {
-//      return response.text();
-//   })
-//   .then(function (text) {
-////	csvToSeries(text);
-//	console.log('file data', text.split('\n')[0][0])
-//   })
-//   .catch(function (error) {
-//      //Something went wrong
-//      console.log(error);
-//   });
-//
-//function csvToSeries(text) {
-//   console.log(text);
-//}
-
-//    useEffect(() => {
-//    d3.csvParse("../../../code/violations.csv").then((d) => {
-//      setData(d);
-//      setLoading(false);
-//    });
-//    console.log('file data', data)
-//    return () => undefined;
-//  }, []);
 
   return (
     <>
       <NavBarAfterLogin />
 
       <Row>
-        <Col sm={3}>
+        <Col sm={2}>
           <div
-            style={{ height: "100vh", backgroundColor: "black", padding: "5%" }}
+            style={{ height: "100%", backgroundColor: "black", padding: "5%" }}
           >
-            <button onClick={handleShow} className="ButtonSyle_1">
+            <button onClick={handleShow} className="ButtonSyle_1 mb-2">
               Add Camera
             </button>
             {cameraNameArray.map((data) => (
               <div className="sidenav border-bottom">
                 <Row>
                   <Col sm={2}>
-                    <img src={video_play} className="image_style"></img>
+                    <img src={video_play} className="image_style mt-2"></img>
                   </Col>
-                  <Col sm={8}>
+                  <Col sm={6}>
                     <label
                       onClick={() => {
                         setIframeSrc(video_url + data.file);
@@ -256,9 +297,53 @@ export default function DashboardPage() {
             )} */}
           </div>
         </Col>
-
-        <Col sm={9}>
+        <Col sm={10}>
           <Row>
+          <Card className="root w-25 m-3 cardColor">
+            <CardHeader
+               title="Number of peoples"
+            />
+            <CardContent>
+                <Typography
+                 variant="body2"
+                  color="textSecondary"
+                  component="p"
+                  className="text-white"
+                  >
+                   {currentPeople}
+                 </Typography>
+               </CardContent>
+            </Card>
+            <Card className="root w-25 m-3 cardColor">
+            <CardHeader
+               title="Violations"
+            />
+            <CardContent>
+                <Typography
+                 variant="body2"
+                  color="textSecondary"
+                  component="p"
+                  className="text-white"
+                  >
+                   {violationCount}
+                 </Typography>
+               </CardContent>
+            </Card>
+            <Card className="root w-25 m-3 cardColor">
+            <CardHeader
+               title="Threshold"
+            />
+            <CardContent>
+                <Typography
+                 variant="body2"
+                  color="textSecondary"
+                  component="p"
+                  className="text-white"
+                  >
+                   Number
+                 </Typography>
+               </CardContent>
+            </Card>
             <Col>
               <Paper
                 style={{
@@ -283,10 +368,10 @@ export default function DashboardPage() {
           </Row>
           <Plot
           data={[{
-            x: timeValues,
+            x: xlen,
             y: xValues
           }]}
-          layout={{ width: 1820, height: 640, title: "Graph Example", xaxis: {title: 'Duration'}, yaxis: {title: 'No. of People', titlefont: {
+          layout={{ width: 720, height: 640, title: "Graph Example", xaxis: {title: 'Duration'}, yaxis: {title: 'No. of People', titlefont: {
                      family: 'Courier New, monospace',
                      size: 18,
                      color: '#7f7f7f'
@@ -298,7 +383,7 @@ export default function DashboardPage() {
             x: ylen,
             y: yValues
           }]}
-          layout={{ width: 1820, height: 640, title: "Graph Example", xaxis: {title: 'Duration'}, yaxis: {title: 'Violations', titlefont: {
+          layout={{ width: 720, height: 640, title: "Graph Example", xaxis: {title: 'Duration'}, yaxis: {title: 'Violations', titlefont: {
                      family: 'Courier New, monospace',
                      size: 18,
                      color: '#7f7f7f'

@@ -30,6 +30,7 @@ ALLOWED_EXTENSIONS = {'mp4'}
 xVals = []
 yVals = []
 currentTime = []
+csvFile1 = []
 
 
 def getSettings(config_dict):
@@ -40,6 +41,8 @@ print(getSettings(app.config))
 
 
 def gen_frames(filename):
+    csvFile = filename.split('.')[0] + '.csv'
+    csvFile1.append(csvFile)
     try:
         with app.app_context():
             mailSent = False
@@ -81,7 +84,7 @@ def gen_frames(filename):
                 if draw_metrics(frame, violations, no_of_people, mailSent) is True:
                     mailSent = True
                 data = [no_of_people, len(violations), timestamp]
-                with open('../client/src/assets/violations.csv', mode='a', newline='') as csv_file:
+                with open('../client/src/assets/{csvFile}', mode='a', newline='') as csv_file:
                     csv_writer = csv.writer(csv_file)
                     csv_writer.writerow(data)
                 ret, buffer = cv2.imencode('.jpg', frame)
@@ -101,6 +104,12 @@ def gen_frames(filename):
     except:
         traceback.print_exc()
     finally:
+        # xVals.append("#")
+        # yVals.append("#")
+        data = ["#", "#", "#"]
+        with open('../client/src/assets/violations.csv', mode='a', newline='') as csv_file:
+            csv_writer = csv.writer(csv_file)
+            csv_writer.writerow(data)
         if writer is not None:
             writer.release()
         if cap is not None:
@@ -117,6 +126,13 @@ def video_feed(filename):
 def get_current_time():
     print('inside')
     return {'time': xVals}
+
+
+@app.route('/getFile')
+@cross_origin()
+def get_current_file():
+    print('inside')
+    return {'file': csvFile1}
 
 
 @app.route('/dashboard1')
