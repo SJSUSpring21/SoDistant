@@ -289,7 +289,7 @@ export default function DashboardPage() {
             )} */}
           </div>
         </Col>
-        <Col sm={7}>
+        <Col sm={10}>
           <Row>
             <Card className="root w-25 m-5 cardColor">
               <CardHeader title="Number of peoples" />
@@ -330,7 +330,6 @@ export default function DashboardPage() {
                 </Typography>
               </CardContent>
             </Card>
-          </Row>
           <Col>
             <Paper
               style={{
@@ -345,7 +344,7 @@ export default function DashboardPage() {
               <iframe id="myiframe" src={iframesrc} width="700" height="395" />
             </Paper>
           </Col>
-
+          </Row>
           <Plot
             data={[
               {

@@ -117,6 +117,7 @@ export default function NavBarAfterLogin() {
 
           )} */}
         &nbsp;&nbsp;
+        <span style={{marginLeft:'88%'}}>
         <Button
           startIcon={<SettingsRoundedIcon />}
           onClick={handleSettings}
@@ -127,6 +128,7 @@ export default function NavBarAfterLogin() {
             borderRadius: "10px",
           }}
         ></Button>
+        </span>
       </Toolbar>
     </AppBar>
   );
