@@ -114,11 +114,6 @@ export default function NavBarAfterLogin() {
           )} */}
           &nbsp;&nbsp;
             <Button
-            startIcon={<VisibilityRoundedIcon />}
-           style={{fontSize:"18px",padding:"13px 24px 13px 24px",textAlign:"center",lineHeight:"20.7px",float:"right",background:"#d1335a",color:"#FFFFFF",borderRadius:"10px"}} variant="contained">
-            View Graph
-            </Button> &nbsp;&nbsp;
-            <Button
             startIcon={<SettingsRoundedIcon />}
             onClick={handleSettings} 
             style={{fontSize:"18px",float:"right",color:"#d1335a",borderRadius:"10px"}}>

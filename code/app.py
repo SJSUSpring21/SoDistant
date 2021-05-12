@@ -10,7 +10,6 @@ import traceback
 from detect import detect_people, draw_people, draw_metrics
 from werkzeug.utils import secure_filename
 from datetime import datetime
-import csv
 
 
 app = Flask(__name__)
@@ -30,7 +29,6 @@ ALLOWED_EXTENSIONS = {'mp4'}
 xVals = []
 yVals = []
 currentTime = []
-csvFile1 = []
 
 
 def getSettings(config_dict):
@@ -41,11 +39,9 @@ print(getSettings(app.config))
 
 
 def gen_frames(filename):
-    csvFile = filename.split('.')[0] + '.csv'
     xVals.clear()
     yVals.clear()
     currentTime.clear()
-    csvFile1.clear()
     try:
         with app.app_context():
             mailSent = False
@@ -86,10 +82,6 @@ def gen_frames(filename):
                 currentTime.append(timestamp)
                 if draw_metrics(frame, violations, no_of_people, mailSent) is True:
                     mailSent = True
-                data = [no_of_people, len(violations), timestamp]
-                with open('../client/src/assets/{csvFile}', mode='a', newline='') as csv_file:
-                    csv_writer = csv.writer(csv_file)
-                    csv_writer.writerow(data)
                 ret, buffer = cv2.imencode('.jpg', frame)
                 yield b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n'
                 fps.update()
@@ -109,10 +101,6 @@ def gen_frames(filename):
     finally:
         xVals.append("#")
         yVals.append("#")
-        data = ["#", "#", "#"]
-        with open('../client/src/assets/violations.csv', mode='a', newline='') as csv_file:
-            csv_writer = csv.writer(csv_file)
-            csv_writer.writerow(data)
         if writer is not None:
             writer.release()
         if cap is not None:

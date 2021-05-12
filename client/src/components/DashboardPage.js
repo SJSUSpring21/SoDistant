@@ -13,7 +13,6 @@ import {
   Form,
 } from "react-bootstrap";
 // import InputGroup from 'react-bootstrap/InputGroup'
-//import file from "../assets/test.csv"
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -125,28 +124,6 @@ export default function DashboardPage() {
       });
   }, []);
 
-  // const xlen = []
-  // if(xValues.length >=550){
-  //     for(let i=1; i<550; i++){
-  //     xlen.push(i)
-  // }
-  // }
-  // else
-  // {for(let i=1; i<xValues.length; i++){
-  //     xlen.push(i)
-  // }}
-
-  // const ylen = []
-  // if(yValues.length >=550){
-  //     for(let i=1; i<550; i++){
-  //     ylen.push(i)
-  // }
-  // }
-  // else{
-  // for(let i=1; i<yValues.length; i++){
-  //     ylen.push(i)
-  // }}
-
   let currentPeople = 0;
   const lenX = xValues.length;
   currentPeople = xValues[lenX - 2];
@@ -155,48 +132,12 @@ export default function DashboardPage() {
   const lenY = yValues.length;
   violationCount = yValues[lenY - 2];
 
-  //    const [data, setData] = React.useState([]);
-  //    useEffect(() => {
-  //        fetch('http://localhost:5000/getFile').then(res => res.json()).then(data => {
-  //        console.log('---', data)
-  //        setData(data.file);
-  //        });
-  //    }, []);
-  //    console.log('-2-2--2-2-', data)
-  //    const [loading, setLoading] = React.useState(true);
-  //
-  //    const [fileName, setFileName] = React.useState([]);
 
-  //    const csvFile = data[0]
-  //    console.log('ccccc', csvFile)
-  //    fetch(file).then(function (response) {
-  //      return response.text();
-  //   })
-  //   .then(function (text) {
-  //	csvToSeries(text);
-  ////	console.log('file data', text)
-  //   })
-  //   .catch(function (error) {
-  //      //Something went wrong
-  //      console.log(error);
-  //   });
-  //
-  //   let valuesX = []
-  //   let valuesY = []
-  //
-  //    function csvToSeries(text) {
-  //       console.log('sadfsdf', text.split('\n')[0].split(','))
-  //       let xVal = text.split('\n')
-  //       console.log(xVal)
-  //       for(let j=0; j < xVal.length; j++){
-  //            if(xVal[j].split(',')[0] === "#"){
-  //                break
-  //            }
-  //            valuesX.push(xVal[j].split(',')[0])
-  //            valuesY.push(xVal[j].split(',')[1])
-  //       }
-  //       console.log('xvalaldjflkasjdf;lsafd', valuesX)
-  //    }
+  const [threshold, setThreshold] = useState([]);
+
+  useEffect(() => {
+
+  }, []);
 
   function loadCameraArrayFromLocalStorage() {
     let tempArray = JSON.parse(window.localStorage.getItem("camera_array"));
@@ -233,8 +174,13 @@ export default function DashboardPage() {
           .then((data) => {
             setTimeValues(data.time2);
           });
+
+          fetch("http://localhost:5000/config")
+            .then((res) => res.json())
+            .then((data) => {
+                setThreshold(data.THRESHOLD);
+            });
           count++;
-          console.log(xValues[count]);
           if(xValues[count] === '#'){
             console.log("stopped");
             clearInterval(refreshIntervalId);
@@ -345,7 +291,7 @@ export default function DashboardPage() {
         </Col>
         <Col sm={10}>
           <Row>
-            <Card className="root w-25 m-3 cardColor">
+            <Card className="root w-25 m-5 cardColor">
               <CardHeader title="Number of peoples" />
               <CardContent>
                 <Typography
@@ -358,7 +304,7 @@ export default function DashboardPage() {
                 </Typography>
               </CardContent>
             </Card>
-            <Card className="root w-25 m-3 cardColor">
+            <Card className="root w-25 m-5 cardColor">
               <CardHeader title="Violations" />
               <CardContent>
                 <Typography
@@ -371,7 +317,7 @@ export default function DashboardPage() {
                 </Typography>
               </CardContent>
             </Card>
-            <Card className="root w-25 m-3 cardColor">
+            <Card className="root w-25 m-5 cardColor">
               <CardHeader title="Threshold" />
               <CardContent>
                 <Typography
@@ -380,16 +326,17 @@ export default function DashboardPage() {
                   component="p"
                   className="text-white"
                 >
-                  Number
+                  {threshold}
                 </Typography>
               </CardContent>
             </Card>
+            </Row>
             <Col>
               <Paper
                 style={{
                   display: "inline-block",
                   marginLeft: "10px",
-                  marginTop: "90px",
+                  marginTop: "35px",
                   width: "700",
                   height: "700",
                 }}
@@ -401,22 +348,24 @@ export default function DashboardPage() {
                   width="700"
                   height="395"
                 />
-                {/* <img src="http://localhost:5000/video_feed"
-        width="700" height="395"/> */}
               </Paper>
             </Col>
-          </Row>
-          <Plot
+
+          <Plot className="mt-5"
             data={[
               {
                 x: "time",
                 y: xValues,
               },
+              {
+                x: "time",
+                y: threshold,
+              },
             ]}
             layout={{
               width: 720,
               height: 640,
-              title: "Graph Example",
+              title: "Analysis of number of people",
               xaxis: { title: "Duration" },
               yaxis: {
                 title: "No. of People",
@@ -439,7 +388,7 @@ export default function DashboardPage() {
             layout={{
               width: 720,
               height: 640,
-              title: "Graph Example",
+              title: "Analysis of violations",
               xaxis: { title: "Duration" },
               yaxis: {
                 title: "Violations",
