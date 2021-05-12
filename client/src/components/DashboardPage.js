@@ -52,6 +52,7 @@ export default function DashboardPage() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+
   // const handleSaveCamera = async () => {
   //   setIframeSrc(cameraUrl);
   //   var d = cameraUrl.split("/");
@@ -94,103 +95,108 @@ export default function DashboardPage() {
       });
   };
 
-  const [xValues, setXValues] = useState(0);
+  const [xValues, setXValues] = useState([]);
 
-    useEffect(() => {
-        fetch('http://localhost:5000/dashboard').then(res => res.json()).then(data => {
+  useEffect(() => {
+    fetch("http://localhost:5000/dashboard")
+      .then((res) => res.json())
+      .then((data) => {
         setXValues(data.time);
-        });
-    }, []);
+      });
+  }, []);
 
-    const [yValues, setYValues] = useState(0);
+  const [yValues, setYValues] = useState([]);
 
-    useEffect(() => {
-        fetch('http://localhost:5000/dashboard1').then(res => res.json()).then(data => {
+  useEffect(() => {
+    fetch("http://localhost:5000/dashboard1")
+      .then((res) => res.json())
+      .then((data) => {
         setYValues(data.time1);
-        });
-    }, []);
+      });
+  }, []);
 
-    const [timeValues, setTimeValues] = useState(0);
+  const [timeValues, setTimeValues] = useState([]);
 
-    useEffect(() => {
-        fetch('http://localhost:5000/dashboard2').then(res => res.json()).then(data => {
+  useEffect(() => {
+    fetch("http://localhost:5000/dashboard2")
+      .then((res) => res.json())
+      .then((data) => {
         setTimeValues(data.time2);
-        });
-    }, []);
+      });
+  }, []);
 
-    const xlen = []
-    if(xValues.length >=550){
-        for(let i=1; i<550; i++){
-        xlen.push(i)
-    }
-    }
-    else
-    {for(let i=1; i<xValues.length; i++){
-        xlen.push(i)
-    }}
+  // const xlen = []
+  // if(xValues.length >=550){
+  //     for(let i=1; i<550; i++){
+  //     xlen.push(i)
+  // }
+  // }
+  // else
+  // {for(let i=1; i<xValues.length; i++){
+  //     xlen.push(i)
+  // }}
 
+  // const ylen = []
+  // if(yValues.length >=550){
+  //     for(let i=1; i<550; i++){
+  //     ylen.push(i)
+  // }
+  // }
+  // else{
+  // for(let i=1; i<yValues.length; i++){
+  //     ylen.push(i)
+  // }}
 
-    const ylen = []
-    if(yValues.length >=550){
-        for(let i=1; i<550; i++){
-        ylen.push(i)
-    }
-    }
-    else{
-    for(let i=1; i<yValues.length; i++){
-        ylen.push(i)
-    }}
+  let currentPeople = 0;
+  const lenX = xValues.length;
+  currentPeople = xValues[lenX - 2];
 
-    let currentPeople = 0
-    const lenX = xValues.length
-    currentPeople = xValues[lenX-2]
+  let violationCount = 0;
+  const lenY = yValues.length;
+  violationCount = yValues[lenY - 2];
 
-    let violationCount = 0
-    const lenY = yValues.length
-    violationCount = yValues[lenY-2]
+  //    const [data, setData] = React.useState([]);
+  //    useEffect(() => {
+  //        fetch('http://localhost:5000/getFile').then(res => res.json()).then(data => {
+  //        console.log('---', data)
+  //        setData(data.file);
+  //        });
+  //    }, []);
+  //    console.log('-2-2--2-2-', data)
+  //    const [loading, setLoading] = React.useState(true);
+  //
+  //    const [fileName, setFileName] = React.useState([]);
 
-//    const [data, setData] = React.useState([]);
-//    useEffect(() => {
-//        fetch('http://localhost:5000/getFile').then(res => res.json()).then(data => {
-//        console.log('---', data)
-//        setData(data.file);
-//        });
-//    }, []);
-//    console.log('-2-2--2-2-', data)
-//    const [loading, setLoading] = React.useState(true);
-//
-//    const [fileName, setFileName] = React.useState([]);
-
-//    const csvFile = data[0]
-//    console.log('ccccc', csvFile)
-//    fetch(file).then(function (response) {
-//      return response.text();
-//   })
-//   .then(function (text) {
-//	csvToSeries(text);
-////	console.log('file data', text)
-//   })
-//   .catch(function (error) {
-//      //Something went wrong
-//      console.log(error);
-//   });
-//
-//   let valuesX = []
-//   let valuesY = []
-//
-//    function csvToSeries(text) {
-//       console.log('sadfsdf', text.split('\n')[0].split(','))
-//       let xVal = text.split('\n')
-//       console.log(xVal)
-//       for(let j=0; j < xVal.length; j++){
-//            if(xVal[j].split(',')[0] === "#"){
-//                break
-//            }
-//            valuesX.push(xVal[j].split(',')[0])
-//            valuesY.push(xVal[j].split(',')[1])
-//       }
-//       console.log('xvalaldjflkasjdf;lsafd', valuesX)
-//    }
+  //    const csvFile = data[0]
+  //    console.log('ccccc', csvFile)
+  //    fetch(file).then(function (response) {
+  //      return response.text();
+  //   })
+  //   .then(function (text) {
+  //	csvToSeries(text);
+  ////	console.log('file data', text)
+  //   })
+  //   .catch(function (error) {
+  //      //Something went wrong
+  //      console.log(error);
+  //   });
+  //
+  //   let valuesX = []
+  //   let valuesY = []
+  //
+  //    function csvToSeries(text) {
+  //       console.log('sadfsdf', text.split('\n')[0].split(','))
+  //       let xVal = text.split('\n')
+  //       console.log(xVal)
+  //       for(let j=0; j < xVal.length; j++){
+  //            if(xVal[j].split(',')[0] === "#"){
+  //                break
+  //            }
+  //            valuesX.push(xVal[j].split(',')[0])
+  //            valuesY.push(xVal[j].split(',')[1])
+  //       }
+  //       console.log('xvalaldjflkasjdf;lsafd', valuesX)
+  //    }
 
   function loadCameraArrayFromLocalStorage() {
     let tempArray = JSON.parse(window.localStorage.getItem("camera_array"));
@@ -201,25 +207,44 @@ export default function DashboardPage() {
     }
   }
 
+  let count = 0;
   // new changes
-  const getData = (abc) =>{
-
-
-    fetch('http://localhost:5000/dashboard').then(res => res.json()).then(data => {
-        setXValues(data.time);
-        });
-
+  const getData = (fileName) => {
+    
+    var refreshIntervalId = 
+      setInterval(() => {
+        let oldXLen = xValues.length;
+        let oldYLen = yValues.length;
         
+        fetch("http://localhost:5000/dashboard")
+          .then((res) => res.json())
+          .then((data) => {
+            setXValues(data.time);
+          });
 
-    fetch('http://localhost:5000/dashboard1').then(res => res.json()).then(data => {
-      setYValues(data.time1);
-      });
+        fetch("http://localhost:5000/dashboard1")
+          .then((res) => res.json())
+          .then((data) => {
+            setYValues(data.time1);
+          });
 
-      console.log(xValues.len);
-      console.log(yValues.len);
+        fetch("http://localhost:5000/dashboard2")
+          .then((res) => res.json())
+          .then((data) => {
+            setTimeValues(data.time2);
+          });
+          count++;
+          if (count === 5) {
+            clearInterval(refreshIntervalId);
+          }
+          console.log(xValues[xValues.length-1]);
+          if(xValues != undefined || xValues.length !== 0 || xValues[xValues.length-1] === '#'){
+            console.log("stopped");
+            clearInterval(refreshIntervalId);
+          }
 
-
-  }
+      }, 1000)
+  };
 
   //
   useEffect(() => {
@@ -250,7 +275,6 @@ export default function DashboardPage() {
     });
   };
 
-
   return (
     <>
       <NavBarAfterLogin />
@@ -273,11 +297,7 @@ export default function DashboardPage() {
                     <label
                       onClick={() => {
                         setIframeSrc(video_url + data.file);
-                        setInterval(()=>{
-                          getData(data.file)
-                        },1000)
-
-                        
+                        setTimeout(function() { getData(data.file); }, 1000);
                       }}
                     >
                       {data.name}
@@ -309,6 +329,8 @@ export default function DashboardPage() {
                         } else {
                           setIframeSrc(video_url + cameraNameArray[0].file);
                         }
+                        setXValues([]);
+                        setYValues([]);
                       }}
                     >
                       X
@@ -326,50 +348,44 @@ export default function DashboardPage() {
         </Col>
         <Col sm={10}>
           <Row>
-          <Card className="root w-25 m-3 cardColor">
-            <CardHeader
-               title="Number of peoples"
-            />
-            <CardContent>
+            <Card className="root w-25 m-3 cardColor">
+              <CardHeader title="Number of peoples" />
+              <CardContent>
                 <Typography
-                 variant="body2"
+                  variant="body2"
                   color="textSecondary"
                   component="p"
                   className="text-white"
-                  >
-                   {currentPeople}
-                 </Typography>
-               </CardContent>
+                >
+                  {currentPeople}
+                </Typography>
+              </CardContent>
             </Card>
             <Card className="root w-25 m-3 cardColor">
-            <CardHeader
-               title="Violations"
-            />
-            <CardContent>
+              <CardHeader title="Violations" />
+              <CardContent>
                 <Typography
-                 variant="body2"
+                  variant="body2"
                   color="textSecondary"
                   component="p"
                   className="text-white"
-                  >
-                   {violationCount}
-                 </Typography>
-               </CardContent>
+                >
+                  {violationCount}
+                </Typography>
+              </CardContent>
             </Card>
             <Card className="root w-25 m-3 cardColor">
-            <CardHeader
-               title="Threshold"
-            />
-            <CardContent>
+              <CardHeader title="Threshold" />
+              <CardContent>
                 <Typography
-                 variant="body2"
+                  variant="body2"
                   color="textSecondary"
                   component="p"
                   className="text-white"
-                  >
-                   Number
-                 </Typography>
-               </CardContent>
+                >
+                  Number
+                </Typography>
+              </CardContent>
             </Card>
             <Col>
               <Paper
@@ -394,29 +410,51 @@ export default function DashboardPage() {
             </Col>
           </Row>
           <Plot
-          data={[{
-            x: xlen,
-            y: xValues
-          }]}
-          layout={{ width: 720, height: 640, title: "Graph Example", xaxis: {title: 'Duration'}, yaxis: {title: 'No. of People', titlefont: {
-                     family: 'Courier New, monospace',
-                     size: 18,
-                     color: '#7f7f7f'
-                 }} }}
-          graphDiv="graph"
-        />
-        <Plot
-          data={[{
-            x: ylen,
-            y: yValues
-          }]}
-          layout={{ width: 720, height: 640, title: "Graph Example", xaxis: {title: 'Duration'}, yaxis: {title: 'Violations', titlefont: {
-                     family: 'Courier New, monospace',
-                     size: 18,
-                     color: '#7f7f7f'
-                 }} }}
-          graphDiv="graph"
-        />
+            data={[
+              {
+                x: timeValues,
+                y: xValues,
+              },
+            ]}
+            layout={{
+              width: 720,
+              height: 640,
+              title: "Graph Example",
+              xaxis: { title: "Duration" },
+              yaxis: {
+                title: "No. of People",
+                titlefont: {
+                  family: "Courier New, monospace",
+                  size: 18,
+                  color: "#7f7f7f",
+                },
+              },
+            }}
+            graphDiv="graph"
+          />
+          <Plot
+            data={[
+              {
+                x: "time",
+                y: yValues,
+              },
+            ]}
+            layout={{
+              width: 720,
+              height: 640,
+              title: "Graph Example",
+              xaxis: { title: "Duration" },
+              yaxis: {
+                title: "Violations",
+                titlefont: {
+                  family: "Courier New, monospace",
+                  size: 18,
+                  color: "#7f7f7f",
+                },
+              },
+            }}
+            graphDiv="graph"
+          />
           <br />
         </Col>
         <Modal show={show} onHide={handleClose}>
