@@ -234,14 +234,14 @@ export default function DashboardPage() {
             setTimeValues(data.time2);
           });
           count++;
-          if (count === 5) {
+          if (count === 500) {
             clearInterval(refreshIntervalId);
           }
-          console.log(xValues[xValues.length-1]);
-          if(xValues != undefined || xValues.length !== 0 || xValues[xValues.length-1] === '#'){
-            console.log("stopped");
-            clearInterval(refreshIntervalId);
-          }
+          // console.log(xValues[xValues.length-1]);
+          // if(xValues != undefined || xValues.length !== 0 || xValues[xValues.length-1] === '#'){
+          //   console.log("stopped");
+          //   clearInterval(refreshIntervalId);
+          // }
 
       }, 1000)
   };
@@ -346,10 +346,10 @@ export default function DashboardPage() {
             )} */}
           </div>
         </Col>
-        <Col sm={10}>
+        <Col sm={7}>
           <Row>
             <Card className="root w-25 m-3 cardColor">
-              <CardHeader title="Number of peoples" />
+              <CardHeader title="Number of people" />
               <CardContent>
                 <Typography
                   variant="body2"
@@ -409,6 +409,7 @@ export default function DashboardPage() {
               </Paper>
             </Col>
           </Row>
+
           <Plot
             data={[
               {

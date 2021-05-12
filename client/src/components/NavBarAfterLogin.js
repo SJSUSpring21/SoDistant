@@ -14,6 +14,7 @@ import sodistantlogo from '../assets/sodistantlogo.svg';
 import cameralogo from '../assets/cameralogo.png';
 import camlogo from '../assets/camlogo.png';
 import cam from '../assets/cam.png';
+import logo from '../assets/logo.png'
 import BackupRoundedIcon from '@material-ui/icons/BackupRounded';
 import VisibilityRoundedIcon from '@material-ui/icons/VisibilityRounded';
 import {useHistory} from 'react-router-dom';
@@ -72,13 +73,22 @@ export default function NavBarAfterLogin() {
 
       <AppBar position="static" style={{background:"#FFFFFF"}}>
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-             <Image rounded style={{width:"35px",height:"35px"}} src={cam}
+          
+              <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            <Link to="dashboard">
+            <Image  style={{width:"110px",height:"45px"}} src={logo}
              />
+            </Link>
+            
             </IconButton>
-            <Typography variant="h4" className={classes.title}>
+
+          
+
+          
+          
+            {/* <Typography variant="h4" className={classes.title}>
               <Link style={{textDecoration:"none", color:"#d1335a",fontFamily:"-apple-system, BlinkMacSystemFont, sans-serif"}} to="dashboard">SoDistant</Link>
-            </Typography>
+            </Typography> */}
           {/* {(
             <div>
               <IconButton
@@ -113,9 +123,12 @@ export default function NavBarAfterLogin() {
 
           )} */}
           &nbsp;&nbsp;
-            <Button
+          <span style={{marginLeft:'70%'}}>
+
+          
+            <Button 
             startIcon={<VisibilityRoundedIcon />}
-           style={{fontSize:"18px",padding:"13px 24px 13px 24px",textAlign:"center",lineHeight:"20.7px",float:"right",background:"#d1335a",color:"#FFFFFF",borderRadius:"10px"}} variant="contained">
+           style={{fontSize:"15px",padding:"13px 24px 13px 24px",textAlign:"center",lineHeight:"20.7px",float:"right",background:"#d1335a",color:"#FFFFFF",borderRadius:"10px"}} variant="contained">
             View Graph
             </Button> &nbsp;&nbsp;
             <Button
@@ -123,6 +136,8 @@ export default function NavBarAfterLogin() {
             onClick={handleSettings} 
             style={{fontSize:"18px",float:"right",color:"#d1335a",borderRadius:"10px"}}>
             </Button>
+            </span>
+          
         </Toolbar>
       </AppBar>
     )
