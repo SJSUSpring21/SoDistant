@@ -51,7 +51,6 @@ export default function DashboardPage() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-
   // const handleSaveCamera = async () => {
   //   setIframeSrc(cameraUrl);
   //   var d = cameraUrl.split("/");
@@ -132,12 +131,9 @@ export default function DashboardPage() {
   const lenY = yValues.length;
   violationCount = yValues[lenY - 2];
 
-
   const [threshold, setThreshold] = useState([]);
 
-  useEffect(() => {
-
-  }, []);
+  useEffect(() => {}, []);
 
   function loadCameraArrayFromLocalStorage() {
     let tempArray = JSON.parse(window.localStorage.getItem("camera_array"));
@@ -151,42 +147,44 @@ export default function DashboardPage() {
   let count = 0;
   // new changes
   const getData = (fileName) => {
-    
-    var refreshIntervalId = 
-      setInterval(() => {
-        let oldXLen = xValues.length;
-        let oldYLen = yValues.length;
-        
-        fetch("http://localhost:5000/dashboard")
-          .then((res) => res.json())
-          .then((data) => {
-            setXValues(data.time);
-          });
+    var refreshIntervalId = setInterval(() => {
+      let oldXLen = xValues.length;
+      let oldYLen = yValues.length;
 
-        fetch("http://localhost:5000/dashboard1")
-          .then((res) => res.json())
-          .then((data) => {
-            setYValues(data.time1);
-          });
+      fetch("http://localhost:5000/dashboard")
+        .then((res) => res.json())
+        .then((data) => {
+          setXValues(data.time);
+        });
 
-        fetch("http://localhost:5000/dashboard2")
-          .then((res) => res.json())
-          .then((data) => {
-            setTimeValues(data.time2);
-          });
+      fetch("http://localhost:5000/dashboard1")
+        .then((res) => res.json())
+        .then((data) => {
+          setYValues(data.time1);
+        });
 
-          fetch("http://localhost:5000/config")
-            .then((res) => res.json())
-            .then((data) => {
-                setThreshold(data.THRESHOLD);
-            });
-          count++;
-          if(xValues[count] === '#'){
-            console.log("stopped");
-            clearInterval(refreshIntervalId);
-          }
+      fetch("http://localhost:5000/dashboard2")
+        .then((res) => res.json())
+        .then((data) => {
+          setTimeValues(data.time2);
+        });
 
-      }, 100)
+      fetch("http://localhost:5000/config")
+        .then((res) => res.json())
+        .then((data) => {
+          setThreshold(data.THRESHOLD);
+        });
+      count++;
+      if (xValues[count] === "#") {
+        console.log("stopped");
+        clearInterval(refreshIntervalId);
+      }
+      // console.log(xValues[xValues.length-1]);
+      // if(xValues != undefined || xValues.length !== 0 || xValues[xValues.length-1] === '#'){
+      //   console.log("stopped");
+      //   clearInterval(refreshIntervalId);
+      // }
+    }, 100);
   };
 
   //
@@ -240,7 +238,9 @@ export default function DashboardPage() {
                     <label
                       onClick={() => {
                         setIframeSrc(video_url + data.file);
-                        setTimeout(function() { getData(data.file); }, 1000);
+                        setTimeout(function () {
+                          getData(data.file);
+                        }, 1000);
                       }}
                     >
                       {data.name}
@@ -289,7 +289,7 @@ export default function DashboardPage() {
             )} */}
           </div>
         </Col>
-        <Col sm={10}>
+        <Col sm={7}>
           <Row>
             <Card className="root w-25 m-5 cardColor">
               <CardHeader title="Number of peoples" />
@@ -330,28 +330,23 @@ export default function DashboardPage() {
                 </Typography>
               </CardContent>
             </Card>
-            </Row>
-            <Col>
-              <Paper
-                style={{
-                  display: "inline-block",
-                  marginLeft: "10px",
-                  marginTop: "35px",
-                  width: "700",
-                  height: "700",
-                }}
-                elevation={3}
-              >
-                <iframe
-                  id="myiframe"
-                  src={iframesrc}
-                  width="700"
-                  height="395"
-                />
-              </Paper>
-            </Col>
+          </Row>
+          <Col>
+            <Paper
+              style={{
+                display: "inline-block",
+                marginLeft: "10px",
+                marginTop: "35px",
+                width: "700",
+                height: "700",
+              }}
+              elevation={3}
+            >
+              <iframe id="myiframe" src={iframesrc} width="700" height="395" />
+            </Paper>
+          </Col>
 
-          <Plot className="mt-5"
+          <Plot
             data={[
               {
                 x: "time",
