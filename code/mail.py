@@ -2,8 +2,8 @@ import smtplib, ssl
 
 
 def send(mail):
-    EMAIL = "sodistantapp@gmail.com"
-    PASS = "sodistant12"
+    EMAIL = "#"
+    PASS = "#"
     PORT = 465
     server = smtplib.SMTP_SSL('smtp.gmail.com', PORT)
     server = smtplib.SMTP_SSL('smtp.gmail.com', PORT)
